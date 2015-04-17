@@ -16,7 +16,7 @@ RUN gem install bundler
 #### Clone Github repos ####
 
 RUN mkdir -p home
-RUN git clone git@github.com:InfinityG/id-io.git /home/id-io
+RUN git clone https://github.com/InfinityG/id-io.git /home/id-io
 RUN \
   cd /home/id-io && \
   bundler install --without test development
