@@ -1,7 +1,7 @@
 # id-io
 Identity/registration service built on Sinatra
 
-__PLEASE NOTE__: This code is still in a Beta development phase. Some features are still in early development and some are still to be implemented.
+__PLEASE NOTE__: This code is still in alpha development. Some features are still in early development and some are still to be implemented.
 
 ## Features
 - __RESTful API__
