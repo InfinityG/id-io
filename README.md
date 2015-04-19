@@ -187,3 +187,12 @@ can be read using a utility Ruby gem: https://rubygems.org/gems/ig-identity-rp-v
 - The signature present in the decrypted payload is then validated using the public ECDSA key of id-io. If this validates
  true then the payload is deemed OK.
 
+## MITM and replay attack mitigation
+- Although a good degree of security can be achieved using a combination of AES encryption and ECDSA signatures to 
+protect payloads, there is still the issue of man-in-the-middle (MITM) and replay attacks. Hijacking of auth payloads 
+could allow an attacker to login to the relying party.
+- To help mitigate this, the encrypted auth payload contains:
+  - An *expiry_date* field, which is configurable on id-io and allows a short lifetime for the auth payload
+  - An *ip_address* field, which represents the IP of the client. This will be expanded to try and create a more reliable
+  client fingerprint.
+  - The relying party can then compare the payload information with the requesting client to ensure that it is the same client. 
