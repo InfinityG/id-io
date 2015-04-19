@@ -115,7 +115,7 @@ This endpoint is used to login using a signed challenge. It is up to the client/
 - Prerequisites:
   - User must have registered a public ECDSA key on id-io
   - User must have the matching ECDSA secret in order to sign the challenge
-  - A Ruby gem is available for signing: https://rubygems.org/gems/ig-crypto-utils
+  - Client-side (javascript) signing can be done using the CryptocoinJS library: http://cryptocoinjs.com/modules/crypto/ecdsa/#usage
   - User must have created a challenge (see above step)
 - Uri: /login
 - Method: POST
