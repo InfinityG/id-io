@@ -36,7 +36,8 @@ __PLEASE NOTE__: This code is still in alpha development. Some features are stil
 
 ### Trust creation
 This endpoint is used to create a trust between id-io and the relying party. The relying party provides a shared AES key
-which is used for symmetrical encryption of login payloads.
+which is used for symmetrical encryption of login payloads. *This is an administrative endpoint and so requires a valid
+authorization header.*
 
 - Uri: /trusts
 - Method: POST
@@ -63,7 +64,7 @@ This endpoint is used to register a user.
 
 - Uri: /users
 - Method: POST
-- Headers: Headers: Authorization: [auth_token]
+- Headers: none
 - Sample payload: 
   
   ```
