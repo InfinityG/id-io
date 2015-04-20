@@ -60,7 +60,10 @@ authorization header.*
   ```
 
 ### User Registration
-This endpoint is used to register a user.
+This endpoint is used to register a user. Besides a standard username and password, an EC (asymmetric) public key is also
+registered. Asymmetric (public/private) key pairs can be generated on a client with the use of the CryptocoinJS library
+'coinkey' (http://cryptocoinjs.com/modules/currency/coinkey/). It is up to the client application to securely store 
+the private (secret) key on behalf of the user.
 
 - Uri: /users
 - Method: POST
@@ -116,7 +119,8 @@ This endpoint is used to login using a signed challenge. It is up to the client/
 - Prerequisites:
   - User must have registered a public ECDSA key on id-io
   - User must have the matching ECDSA secret in order to sign the challenge
-  - Client-side (javascript) signing can be done using the CryptocoinJS library: http://cryptocoinjs.com/modules/crypto/ecdsa/#usage
+  - Client-side (javascript) signing can be done using the CryptocoinJS ECDSA library: http://cryptocoinjs.com/modules/crypto/ecdsa/#usage
+    - Note that this is a NodeJS library but can be converted for use in the browser with the aid of Browserify (http://browserify.org/)
   - User must have created a challenge (see above step)
 - Uri: /login
 - Method: POST
