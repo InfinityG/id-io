@@ -10,8 +10,8 @@ module Sinatra
     def self.registered(app)
 
       # STEP 1:
-      # this starts a flow where a challenge is returned which then needs to be signed by the consumer
-      # the signed challenge is sent to the '/login' route below
+      # This starts a flow where a challenge is returned which then needs to be signed by the consumer
+      # (the signed challenge needs to then be sent to the '/login' route)
       # payload structure:
       # {
       #   "username": "johndoe@test.com"

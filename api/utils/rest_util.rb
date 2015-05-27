@@ -1,22 +1,28 @@
 require 'rest_client'
+require 'openssl'
 
 class RestUtil
 
-  def execute_get(api_uri, auth_header)
+  def execute_get(api_uri, auth_header = nil)
 
-    client = RestClient::Resource.new api_uri
-    response = client.get(:content_type => 'application/json;charset=UTF-8', :verify_ssl => false, :Authorization => auth_header)
+    client = RestClient::Resource.new api_uri, :verify_ssl => false
+
+    response = begin
+      client.get(:content_type => 'application/json;charset=UTF-8', :Authorization => auth_header)
+    rescue => e
+      return build_response e.response
+    end
 
     build_response(response)
   end
 
-  def execute_post(api_uri, auth_header, json = '')
+  def execute_post(api_uri, json = '', auth_header = nil)
 
     # client = get_client api_uri, true
-    client = RestClient::Resource.new api_uri
+    client = RestClient::Resource.new api_uri, :verify_ssl => false
 
     response = begin
-      client.post(json, :content_type => 'application/json;charset=UTF-8', :verify_ssl => false,  :Authorization => auth_header)
+      client.post(json, :content_type => 'application/json;charset=UTF-8',  :Authorization => auth_header)
     rescue => e
         return build_response e.response
     end

@@ -3,6 +3,7 @@ require './api/models/webhook'
 require './api/repositories/user_repository'
 require './api/services/hash_service'
 require './api/services/config_service'
+require './api/services/transaction_service'
 require './api/utils/rest_util'
 require './api/constants/error_constants'
 require './api/errors/identity_error'
@@ -12,10 +13,12 @@ class UserService
   include ErrorConstants::IdentityErrors
 
   def initialize(user_repository = UserRepository, hash_service = HashService,
-                 config_service = ConfigurationService, rest_util = RestUtil)
+                 config_service = ConfigurationService, transaction_service = TransactionService,
+                 rest_util = RestUtil)
     @user_repository = user_repository.new
     @hash_service = hash_service.new
     @config_service = config_service.new
+    @transaction_service = transaction_service.new
     @rest_util = rest_util.new
   end
 
@@ -35,13 +38,29 @@ class UserService
     # check user doesn't already exist
     raise IdentityError, USERNAME_EXISTS if get_by_username(username) != nil
 
-    # create salt and hash
-    salt = @hash_service.generate_salt
-    hashed_password = @hash_service.generate_password_hash password, salt
+    # create user
+    begin
+      salt = @hash_service.generate_salt
+      hashed_password = @hash_service.generate_password_hash password, salt
 
-    # save user
-    user = @user_repository.save_user first_name, last_name, username, salt, hashed_password,
-                                      public_key, role, mobile_number, webhooks, registrar
+      user = @user_repository.save_user first_name, last_name, username, salt, hashed_password,
+                                        public_key, role, mobile_number, webhooks, registrar
+    rescue Exception => e
+      raise IdentityError, e.message
+    end
+
+    # create a new transaction on the blockchain with embedded details
+    begin
+      memo_hash = public_key != '' ?
+          {:u_id => username, :u_ec_pub => public_key, :op_code => 'U_CREATE'} :
+          {:u_id => username, :op_code => 'U_CREATE'}
+
+      @transaction_service.execute_deposit(user, 1.0, memo_hash)
+    rescue IdentityError
+      # roll back user creation
+      @user_repository.delete_user user.id
+      raise
+    end
 
     # send confirmation sms if this is required
     send_confirmation_sms(username, mobile_number) if confirm_mobile
@@ -71,9 +90,16 @@ class UserService
   end
 
   def update(user)
-    #TODO: update the DB - username is the identifier and cannot be changed
+    #TODO: update the DB - username is the identifier (stored in both DB and blockchain) and cannot be changed
     #raise 'User update not implemented'
 
+    user.save
+  end
+
+  def update_block_info(user_id, confirmed_status, block_hash)
+    user = @user_repository.get_user user_id
+    user.block_confirmed = confirmed_status
+    user.block_create_hash = block_hash
     user.save
   end
 

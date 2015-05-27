@@ -21,6 +21,10 @@ class ChallengeService
       user = @user_service.get_by_username username
       raise IdentityError, USER_NOT_FOUND if user == nil
 
+      unless user.block_confirmed
+        raise IdentityError, USER_REGISTRATION_NOT_VALIDATED if user == nil
+      end
+
       # delete any previous challenge for this user
       @challenge_repository.delete_for_user username
 

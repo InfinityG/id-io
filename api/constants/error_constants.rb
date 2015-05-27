@@ -4,6 +4,7 @@ module ErrorConstants
     # NO_CONTRACT_FOUND = 'No contract found with id %s'
     USERNAME_EXISTS = 'Username already exists'
     USER_NOT_FOUND = 'User cannot be found'
+    USER_REGISTRATION_NOT_VALIDATED = 'Username not yet validated on blockchain'
     PUBLIC_KEY_NOT_REGISTERED = 'Cannot validate signature - no public key registered for user'
     DOMAIN_NOT_AUTHORIZED = 'Domain not authorized'
     INVALID_PASSWORD = 'Password invalid'
@@ -11,6 +12,7 @@ module ErrorConstants
     INVALID_SIGNATURE = 'Invalid challenge signature'
     INVALID_DOMAIN = 'Invalid domain'
     INVALID_AES_KEY = 'Invalid AES key'
+    TRANSACTION_ERROR = 'An error occurred when attempting a transaction'
   end
 
   module ValidationErrors
