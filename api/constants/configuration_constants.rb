@@ -15,7 +15,7 @@ module ConfigurationConstants
         :logger_age => 10,
         :logger_size => 1024000,
         :default_request_timeout => 60,
-        :allowed_origin => 'http://localhost:8000',
+        :allowed_origin => '*',
         :token_expiry => 3600,
         :challenge_expiry => 3600,
         :sms_api_message_uri => 'http://localhost:9004/messages/outbound',

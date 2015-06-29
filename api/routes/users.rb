@@ -83,10 +83,15 @@ module Sinatra
       end
 
       #get all users that have been registered by another user (denoted by username)
-      app.get '/users/associations/:username' do
+      app.get '/users/associations' do
         content_type :json
 
-        username = params[:username]
+        user_id = @current_user_id
+        current_user = UserService.new.get_by_id user_id
+
+        halt 401, 'Unauthorized' if current_user == nil
+
+        username = current_user.username
         user_service = UserService.new
         users = user_service.get_associated_users_by_username username
 
