@@ -11,7 +11,7 @@ module Sinatra
             (request.request_method == 'POST' && request.path_info == '/users') ||
             (request.request_method == 'POST' && request.path_info == '/challenge') ||
             (request.request_method == 'POST' && request.path_info == '/login') ||
-            (request.request_method == 'POST' && request.path_info == '/confirmations') ||
+            (request.request_method == 'POST' && request.path_info == '/confirmations')
           return
         else
           auth_header = env['HTTP_AUTHORIZATION']
