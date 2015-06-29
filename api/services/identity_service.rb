@@ -136,7 +136,7 @@ class IdentityService
     encoded_plaintext_data = Base64.encode64 plaintext_data
 
     result = @cipher_service.aes_encrypt encoded_plaintext_data, trust.aes_key
-    {:auth => result[:cipher_text], :iv => result[:iv]}
+    {:token => token.uuid, :auth => result[:cipher_text], :iv => result[:iv]}
 
   end
 
