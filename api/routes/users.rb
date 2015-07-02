@@ -76,7 +76,7 @@ module Sinatra
       app.get '/users/:user_id' do
         content_type :json
 
-        user_id = params[:user_id]
+        user_id = params[:origin_user_id]
         user_service = UserService.new
         user = user_service.get_by_id user_id
         user.to_json

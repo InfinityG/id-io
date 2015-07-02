@@ -63,12 +63,52 @@ class IdentityValidator
     if data == nil
       errors.push NO_CHALLENGE_FOUND
     else
-      errors.push INVALID_CHALLENGE_DATA unless ValidationUtil.validate_string data[:data]
-      errors.push INVALID_CHALLENGE_SIGNATURE unless ValidationUtil.validate_string data[:signature]
+      errors.concat validate_signature_fields data
     end
 
     errors
 
+  end
+
+  # validates an initial contact ('friend') request
+  def validate_connection_request(data)
+    errors = []
+
+    #fields
+    if data == nil
+      errors.push NO_DATA_FOUND
+    else
+      errors.push INVALID_USERNAME unless ValidationUtil.validate_string data[:username]
+      errors.concat validate_signature_fields data
+    end
+
+    errors
+
+  end
+
+  # validates a contact confirmation
+  def validate_connection_confirmation(data)
+    errors = []
+
+    #fields
+    if data == nil
+      errors.push NO_DATA_FOUND
+    else
+      errors.push INVALID_CONFIRMATION unless ValidationUtil.validate_string data[:confirmed]
+      errors.concat validate_signature_fields data
+    end
+
+    errors
+
+  end
+
+  def validate_signature_fields(data)
+    errors = []
+
+    errors.push INVALID_DATA unless ValidationUtil.validate_string data[:data]
+    errors.push INVALID_SIGNATURE unless ValidationUtil.validate_string data[:signature]
+
+    errors
   end
 
 end

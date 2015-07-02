@@ -92,12 +92,17 @@ class IdentityService
     challenge = @challenge_service.get_unexpired_by_username user.username
 
     if (challenge == nil) || (challenge.data != decoded_challenge_data)
-      raise IdentityError, INVALID_CHALLENGE_DATA
+      raise IdentityError, INVALID_SIGNED_DATA
     end
 
     # now validate the challenge signature itself
+    validate_signature challenge_data, challenge_signature, user.public_key
+
+  end
+
+  def validate_signature(data, signature, public_key)
     begin
-      unless @signature_service.validate_signature challenge_data, challenge_signature, user.public_key
+      unless @signature_service.validate_signature data, signature, public_key
         raise IdentityError, INVALID_SIGNATURE
       end
     rescue OpenSSL::PKey::ECError

@@ -12,6 +12,7 @@ require './api/routes/identity'
 require './api/routes/auth'
 require './api/routes/trust'
 require './api/routes/webhooks'
+require './api/routes/connections'
 require './api/services/config_service'
 
 class ApiApp < Sinatra::Base
@@ -27,6 +28,7 @@ class ApiApp < Sinatra::Base
     register Sinatra::AuthRoutes
     register Sinatra::TrustRoutes
     register Sinatra::WebhookRoutes
+    register Sinatra::ConnectionRoutes
 
     # Configure MongoMapper
     MongoMapper.connection = Mongo::MongoClient.new(config[:mongo_host], config[:mongo_port])
