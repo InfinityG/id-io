@@ -6,6 +6,7 @@ require 'ig-crypto-utils'
 
 require_relative '../../../api/utils/rest_util'
 require_relative '../../../tests/config'
+require_relative '../../../tests/helpers/random_strings'
 
 Before do
   @random_uuid = SecureRandom.uuid.to_s
@@ -13,15 +14,16 @@ end
 
 Given(/^I am a registered user$/) do
   @first_name = 'Johnny'
+  @last_name = RandomStrings.generate_alpha 15
 
-  @username = 'johnny_' + @random_uuid + '@test.com'
-  @password = 'passwOrd1!'
+  @username = 'johnny_' + @last_name + '@test.com'
+  @password = 'passWOrd1!'
   @encoded_public_key = 'Ag7PunGy2BmnAi+PGE4/Dm9nCg1URv8wLZwSOggyfmAn' # already base64 encoded
   @encoded_secret_key = 'gCrHtl8VVWs6EuJLy7vPqVdBZWzRAR9ZCjIRRpoWvME=' # already base64 encoded
 
   payload = {
       :first_name => @first_name,
-      :last_name => @random_uuid,
+      :last_name => @last_name,
       :username => @username,
       :password => @password,
       :public_key => @encoded_public_key

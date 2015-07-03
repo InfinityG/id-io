@@ -2,26 +2,24 @@ require 'json'
 require 'securerandom'
 require 'base64'
 require 'minitest'
-require_relative '../../../tests/config'
 
-Before do
-  @random_uuid = SecureRandom.uuid.to_s
-end
+require_relative '../../../tests/config'
+require_relative '../../../tests/helpers/random_strings'
 
 Given(/^a first name$/) do
   @first_name = 'Johnny'
 end
 
 And(/^a last name$/) do
-  @last_name = @random_uuid
+  @last_name = RandomStrings.generate_alpha 15
 end
 
 And(/^a username$/) do
-  @username = 'johnny_' + @random_uuid + '@test.com'
+  @username =  "#{@first_name}_#{@last_name}@test.com"
 end
 
 And(/^a password$/) do
-  @password = 'passwOrd1!'
+  @password = 'passWOrd1!'
 end
 
 And(/^an invalid password$/) do

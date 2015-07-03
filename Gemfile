@@ -8,6 +8,7 @@ gem 'bson_ext'
 gem 'mongo'
 gem 'mongo_mapper'
 gem 'ig-crypto-utils'
+gem 'ig-validator-utils'
 
 group :test, :development do
   gem 'minitest'

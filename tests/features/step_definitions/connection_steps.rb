@@ -1,9 +1,9 @@
 require 'json'
-require 'securerandom'
 require 'base64'
 require 'minitest'
 require 'ig-crypto-utils'
 require_relative '../../../tests/config'
+require_relative '../../../tests/helpers/random_strings'
 
 Before do
   @trusted_domain = 'www.testdomain.com'
@@ -14,24 +14,24 @@ end
 
 Given(/^I have an existing origin user$/) do
   first_name = 'johnny'
-  random_uuid = SecureRandom.uuid.to_s
+  last_name = RandomStrings.generate_alpha 15
   keys = CryptoUtils::EcdsaUtil.new.create_key_pair
 
-  @origin_username = "#{first_name}_#{random_uuid}@test.com"
+  @origin_username = "#{first_name}_#{last_name}@test.com"
   @origin_secret_key = keys[:sk]
   @origin_public_key = keys[:pk]
-  @register_origin_result = register_user(first_name, random_uuid, @origin_username, keys[:pk])
+  @register_origin_result = register_user(first_name, last_name, @origin_username, keys[:pk])
 end
 
 Given(/^I have an existing target user$/) do
   first_name = 'bob'
-  random_uuid = SecureRandom.uuid.to_s
+  last_name = RandomStrings.generate_alpha 15
   keys = CryptoUtils::EcdsaUtil.new.create_key_pair
 
-  @target_username = "#{first_name}_#{random_uuid}@test.com"
+  @target_username = "#{first_name}_#{last_name}@test.com"
   @target_secret_key = keys[:sk]
   @target_public_key = keys[:pk]
-  @register_target_result = register_user(first_name, random_uuid, @target_username, keys[:pk])
+  @register_target_result = register_user(first_name, last_name, @target_username, keys[:pk])
 end
 
 And(/^I have an authentication token as an origin user$/) do
@@ -59,13 +59,13 @@ end
 And(/^the origin user has one or more connections$/) do
   # create target
   first_name = 'bob'
-  random_uuid = SecureRandom.uuid.to_s
+  last_name = RandomStrings.generate_alpha 15
   keys = CryptoUtils::EcdsaUtil.new.create_key_pair
 
-  @target_username = "#{first_name}_#{random_uuid}@test.com"
+  @target_username = "#{first_name}_#{last_name}@test.com"
   @target_secret_key = keys[:sk]
   @target_public_key = keys[:pk]
-  @register_target_result = register_user(first_name, random_uuid, @target_username, keys[:pk])
+  @register_target_result = register_user(first_name, last_name, @target_username, keys[:pk])
 
   @connection_create_result = create_connection_request(@origin_login_token, @origin_secret_key, @target_username)
 end
@@ -131,7 +131,7 @@ def register_user(first_name, last_name, username, public_key)
       :first_name => first_name,
       :last_name => last_name,
       :username => username,
-      :password => 'passw0rd1!',
+      :password => 'passW0rd1!',
       :public_key => public_key
   }.to_json
 

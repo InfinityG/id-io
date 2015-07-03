@@ -218,13 +218,11 @@ This endpoint retrieves all connections for a particular user.
 - Prerequisites:
   - User must be registered
 - Uri: /connections?confirmed={true/false}
-  - Parameters: 
-      - confirmed (optional) = [true/false]
 - Method: GET
 - Headers: Authorization [auth_token] (this is the login token of the __origin user__)
   
 - Result:
-    - The response contains the a collection of connections, filtered by the 'confirmed' parameter if present 
+    - The response contains a collection of connections, filtered by the 'confirmed' parameter (if present) 
   
 ```
   [
