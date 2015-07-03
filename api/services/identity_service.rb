@@ -115,13 +115,13 @@ class IdentityService
     @challenge_service.delete(user.username) if user != nil
   end
 
-  def generate_auth(user, trust)
+  def generate_auth(user, fingerprint, trust)
 
     # get the api secret
     api_secret = @configuration_service.get_config[:api_secret_ecdsa_key]
 
     # create a token
-    token = @token_service.create_token user.id
+    token = @token_service.create_token user.id, fingerprint
     encoded_token_uuid = Base64.encode64 token.uuid
 
     # sign the token with the api secret key
@@ -132,6 +132,7 @@ class IdentityService
         :id => user.id,
         :username => user.username,
         :token => encoded_token_uuid,
+        :fingerprint => token.fingerprint,
         :signature => signed_token,
         :role => user.role,
         :expiry_date => token.expires,

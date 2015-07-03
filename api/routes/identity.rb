@@ -61,9 +61,10 @@ module Sinatra
 
         begin
           user = user_service.get_by_username(data[:username])
+          fingerprint = data[:fingerprint]
           identity_service.validate_login_data user, data
           trust = identity_service.validate_domain data
-          result = identity_service.generate_auth user, trust
+          result = identity_service.generate_auth user, fingerprint, trust
           result.to_json
         rescue IdentityError => e
           status 401
