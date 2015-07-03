@@ -135,6 +135,7 @@ This endpoint is used to login using a signed challenge. It is up to the client/
       "data":"YTc1NWNjZmQtOTgwOS00OWFkLTg5OTAtMTAyMGM5NjAyNGM3\n",
       "signature":"MEUCIBQ87YyGpFp97iVlVez5WuUGCnTeVd4hctArzma0pOe4AiEAuIEPWnea\nd4xYHaOXPDFECZdQRXrFMEsS2oNYLsShLB8=\n"
       },
+    "fingerprint":"9f6e26a098b8db4a09b843ca9b074ccb",
     "domain":"www.testdomain.com"
   }
   ```
@@ -160,7 +161,8 @@ This endpoint is used to login using a signed challenge. It is up to the client/
   {
     "username":"johnny_mnemonic@test.com",
     "password":"passwOrd1!",
-    "domain":"www.testdomain.com"
+    "domain":"www.testdomain.com",
+    "fingerprint":"9f6e26a098b8db4a09b843ca9b074ccb"
   }
   ```
   
@@ -286,6 +288,7 @@ can be read using a utility Ruby gem: https://rubygems.org/gems/ig-identity-rp-v
     "username":"johnny_mnemonic@test.com",
     "token":"ZTM1NDU4MmMtMzgyYi00ZmI0LWEwOTAtODM2YmEwYzIxZjQ0\n",
     "signature":"MEUCIH6v57kL9fFFJ3Gnbb3pMVw3PEUX3Pr2Ux3JdACMUj9iAiEAxPnN2Ouw\n8NMpk7w22vpabFJhuVboQ9ekUBfNWOu4Z6c=\n",
+    "fingerprint":"9f6e26a098b8db4a09b843ca9b074ccb",
     "role":"administrator",
     "expiry_date":1429454047,
     "ip_address":"0.0.0.0"
@@ -301,6 +304,8 @@ protect payloads, there is still the issue of man-in-the-middle (MITM) and repla
 could allow an attacker to login to the relying party.
 - To help mitigate this, the encrypted auth payload contains:
   - An *expiry_date* field, which is configurable on id-io and allows a short lifetime for the auth payload
-  - An *ip_address* field, which represents the IP of the client. This will be expanded to try and create a more reliable
-  client fingerprint.
+  - An *ip_address* field, which represents the IP of the client.
+  - A *fingerprint* field - the client fingerprint, which is included in the original login payload from the client.
+    - It is up to the client application to generate the fingerprint - a library such as __fingerprint2js__ 
+    can be used for this (https://github.com/Valve/fingerprintjs2).
   - The relying party can then compare the payload information with the requesting client to ensure that it is the same client. 
