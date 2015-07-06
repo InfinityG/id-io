@@ -33,7 +33,17 @@ class ConnectionService
     end
 
     # finally, create the contact request
-    @connection_repository.create current_user, target_user
+    result = @connection_repository.create current_user, target_user
+
+    {
+        :id => result.id,
+        :confirmed => result.confirmed,
+        :user => {
+            :username => target_user.username,
+            :first_name => target_user.first_name,
+            :last_name => target_user.last_name
+        }
+    }
 
   end
 
@@ -56,11 +66,39 @@ class ConnectionService
     # finally, confirm the connection request and update
     connection.confirmed = true
     @connection_repository.update connection
-    connection
+
+    {
+        :id => connection.id,
+        :confirmed => connection.confirmed,
+        :user => {
+            :user_id => connection.target_user_id,
+            :username => connection.target_username
+        }
+    }
+
   end
 
+  # TODO: refactor this to be more efficient! (may need to refactor user model to embed connections)
   def get_connections(origin_user_id, confirmed)
-    @connection_repository.get_connections origin_user_id, confirmed
+    connections = @connection_repository.get_connections origin_user_id, confirmed
+
+    connections_arr = []
+
+    connections.each do |connection|
+      user = @user_repository.get_user(connection.target_user_id)
+      connections_arr << {
+          :id => connection.id,
+          :confirmed => connection.confirmed,
+          :user => {
+              :username => user.username,
+              :first_name => user.first_name,
+              :last_name => user.last_name,
+              :public_key => user.public_key
+          }
+      }
+    end
+
+    connections_arr
   end
 
   def get_connection(origin_user_id, target_user_id)

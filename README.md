@@ -175,7 +175,7 @@ This endpoint is used to login using a signed challenge. It is up to the client/
   }
   ```
 
-### Request a connection with another user ('friend' request)
+### Create a connection with another user
 This endpoint is used to request a 'connection' to another registered user (much like a 'friend' request). 
 The 'origin' user is the one who initiates the request; the 'target' user is the user who needs to approve the 
 request, and thus becomes added to the origin user's connections.
@@ -193,7 +193,7 @@ request, and thus becomes added to the origin user's connections.
   
 ```
   {
-    "username":"mranderson", 
+    "username":"mranderson@matrix.com", 
     "data":"YTc1NWNjZmQtOTgwOS00OWFkLTg5OTAtMTAyMGM5NjAyNGM3\n",
     "signature":"MEUCIBQ87YyGpFp97iVlVez5WuUGCnTeVd4hctArzma0pOe4AiEAuIEPWnea\nd4xYHaOXPDFECZdQRXrFMEsS2oNYLsShLB8=\n"
   }
@@ -204,14 +204,15 @@ request, and thus becomes added to the origin user's connections.
     - As this will not have been confirmed yet by the connection, the 'confirmed' field value is false
   
 ```
-  {
-    "id":"7628aecfb85a54687c000001",
-    "origin_user_id":"12390aecfb85a54687c000001",
-    "origin_username":"johnnymnemonic@test.com",
-    "target_user_id":"80808aecfb85a54687c000001",
-    "target_username":"mranderson@matrix.com", 
-    "confirmed":false
-  }
+{
+    "id": "7628aecfb85a54687c000001",
+    "confirmed": false,
+    "user": {
+        "username": "mranderson@matrix.com",
+        "first_name": "Neo",
+        "last_name": "Anderson"
+    }
+}
 ```
 
 ### Get connections
@@ -221,26 +222,38 @@ This endpoint retrieves all connections for a particular user.
   - User must be registered
 - Uri: /connections?confirmed={true/false}
 - Method: GET
-- Headers: Authorization [auth_token] (this is the login token of the __origin user__)
+- Headers: Authorization [auth_token]
   
 - Result:
     - The response contains a collection of connections, filtered by the 'confirmed' parameter (if present) 
+    - Unconfirmed connections do not contain public signing keys
   
 ```
-  [
-      {
-          "id":"7628aecfb85a54687c000001",
-          "origin_id":"12390aecfb85a54687c000001",
-          "origin_username":"johnnymnemonic@test.com",
-          "target_user_id":"80808aecfb85a54687c000001",
-          "target_username":"mranderson@matrix.com", 
-          "confirmed":true
-       },
-       ...
-  ]
+[
+    {
+        "id": "7628aecfb85a54687c000001",
+        "confirmed": false,
+        "user": {
+            "username": "mranderson@matrix.com",
+            "first_name": "Neo",
+            "last_name": "Anderson"
+        }
+    },
+    {
+        "id": "559a9db889e26c1a9a000014",
+        "confirmed": true,
+        "user": {
+            "username": "clark_kent@test.com",
+            "first_name": "Clark",
+            "last_name": "Kent",
+            "public_key": "AmWKxZpx8p8wiU70KOPGIc/2qdnfxyh4fMzit6aiMmjb\n"
+        }
+    }
+]
+
 ```
 
-### Confirm a connection request ('friend' request)
+### Confirm a connection request
 This endpoint is used to confirm a 'connection' request. This is initiated by the target user, who decides whether or
 not to approve a connection requested by another user.
 
@@ -267,14 +280,16 @@ not to approve a connection requested by another user.
     - The 'confirmed' field value will be true if successfully confirmed 
   
 ```
-  {
-      "id":"7628aecfb85a54687c000001",
-      "origin_user_id":"12390aecfb85a54687c000001",
-      "origin_username":"johnnymnemonic@test.com",
-      "target_user_id":"80808aecfb85a54687c000001",
-      "target_username":"mranderson@matrix.com", 
-      "confirmed":true
+{
+    "id": "7628aecfb85a54687c000001",
+    "confirmed": true,
+    "user": {
+        "username": "mranderson@matrix.com",
+        "first_name": "Neo",
+        "last_name": "Anderson",
+        "public_key": "AmWKxZpx8p8wiU70KOPGIc/2qdnfxyh4fMzit6aiMmjb\n"
     }
+}   
 ```
     
 ## Relying Party Support

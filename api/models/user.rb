@@ -15,6 +15,8 @@ module SmartIdentity
       key :role, String
       key :registrar, String
 
+      # many :connections, :class_name => 'SmartIdentity::Models::Connection'
+
       many :webhooks, :class_name => 'SmartIdentity::Models::Webhook'
     end
   end
