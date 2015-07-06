@@ -208,6 +208,7 @@ request, and thus becomes added to the origin user's connections.
     "id": "7628aecfb85a54687c000001",
     "confirmed": false,
     "user": {
+        "type":"target",
         "username": "mranderson@matrix.com",
         "first_name": "Neo",
         "last_name": "Anderson"
@@ -234,6 +235,7 @@ This endpoint retrieves all connections for a particular user.
         "id": "7628aecfb85a54687c000001",
         "confirmed": false,
         "user": {
+            "type":"target",
             "username": "mranderson@matrix.com",
             "first_name": "Neo",
             "last_name": "Anderson"
@@ -243,6 +245,7 @@ This endpoint retrieves all connections for a particular user.
         "id": "559a9db889e26c1a9a000014",
         "confirmed": true,
         "user": {
+            "type":"target",
             "username": "clark_kent@test.com",
             "first_name": "Clark",
             "last_name": "Kent",
@@ -250,16 +253,15 @@ This endpoint retrieves all connections for a particular user.
         }
     }
 ]
-
 ```
 
 ### Confirm a connection request
-This endpoint is used to confirm a 'connection' request. This is initiated by the target user, who decides whether or
-not to approve a connection requested by another user.
+This endpoint is used to confirm a 'connection' request. This is initiated by the __target__ user, who decides whether or
+not to approve a connection requested by another user(__origin__ user).
 
 - Prerequisites:
   - The user must be registered
-  - A connection request must have been submitted by another user
+  - A connection request must have been submitted by another user (the __origin__ user)
   - Pending connections can be retrieved using the 'GET /connections?confirmed=false' endpoint
 - Uri: /connections/{connection_id}
 - Method: POST
@@ -276,7 +278,10 @@ not to approve a connection requested by another user.
 ```
   
 - Result:
-    - The response contains the newly created connected user id and username
+    - The response contains:
+        - the connection id and confirmed status
+        - the user type (in this case the __origin__ user)
+        - the __origin__ user's details
     - The 'confirmed' field value will be true if successfully confirmed 
   
 ```
@@ -284,10 +289,10 @@ not to approve a connection requested by another user.
     "id": "7628aecfb85a54687c000001",
     "confirmed": true,
     "user": {
-        "username": "mranderson@matrix.com",
-        "first_name": "Neo",
-        "last_name": "Anderson",
-        "public_key": "AmWKxZpx8p8wiU70KOPGIc/2qdnfxyh4fMzit6aiMmjb\n"
+        "type":"origin",
+        "username": "johnnymnemonic@matrix.com",
+        "first_name": "Johnny",
+        "last_name": "Mnemonic"
     }
 }   
 ```

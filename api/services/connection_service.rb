@@ -39,6 +39,7 @@ class ConnectionService
         :id => result.id,
         :confirmed => result.confirmed,
         :user => {
+            :type => 'target',
             :username => target_user.username,
             :first_name => target_user.first_name,
             :last_name => target_user.last_name
@@ -47,6 +48,7 @@ class ConnectionService
 
   end
 
+  # connection confirmations
   def update(connection_id, current_user, data)
     public_key = current_user.public_key
 
@@ -71,8 +73,9 @@ class ConnectionService
         :id => connection.id,
         :confirmed => connection.confirmed,
         :user => {
-            :user_id => connection.target_user_id,
-            :username => connection.target_username
+            :type => 'origin',
+            :user_id => connection.origin_user_id,
+            :username => connection.origin_username
         }
     }
 
@@ -90,6 +93,7 @@ class ConnectionService
           :id => connection.id,
           :confirmed => connection.confirmed,
           :user => {
+              :type => 'target',
               :username => user.username,
               :first_name => user.first_name,
               :last_name => user.last_name,
