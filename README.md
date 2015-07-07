@@ -128,7 +128,8 @@ This endpoint is used to login using a signed challenge. It is up to the client/
   - User must have the matching ECDSA secret in order to sign the challenge
   - Client-side (javascript) signing can be done using the CryptocoinJS ECDSA library: http://cryptocoinjs.com/modules/crypto/ecdsa/#usage
     - Note that this is a NodeJS library but can be converted for use in the browser with the aid of Browserify (http://browserify.org/)
-  - User must have created a challenge (see above step)
+  - User must first create a challenge (see above step)
+  - The challenge must first be hashed (sha256) and then base64 encoded, before signing
 - Uri: /login
 - Method: POST
 - Headers: none
