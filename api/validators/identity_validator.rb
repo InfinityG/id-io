@@ -41,6 +41,7 @@ class IdentityValidator
     errors.push INVALID_USERNAME unless GeneralValidator.validate_username_strict data[:username]
     errors.push INVALID_PASSWORD unless GeneralValidator.validate_password data[:password]
     errors.push INVALID_DOMAIN unless GeneralValidator.validate_string_strict data[:domain]
+    # errors.push INVALID_REDIRECT unless GeneralValidator.validate_boolean data[:redirect]
 
     raise ValidationError, {:valid => false, :errors => errors}.to_json if errors.count > 0
   end

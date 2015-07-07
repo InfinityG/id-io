@@ -82,10 +82,16 @@ the private (secret) key on behalf of the user.
   ```
   
 - Result:
+    - The registration of a new user returns the user id, username, and a challenge that can be used for a subsequent 
+    login (see ['Login with a signed challenge'](#login-with-signed-challenge))
   
   ```
   {
-    "id":"5533a64db85a5467eb000001"
+      "id": "5533a64db85a5467eb000001",
+      "username": "johnnymnemonic@test.com",
+      "challenge": {
+          "data": "e1dfa83a-fafb-4be9-bba2-aaa7c77e12e7"
+      }
   }
   ```
     

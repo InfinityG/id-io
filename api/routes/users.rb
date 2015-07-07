@@ -24,7 +24,7 @@ module Sinatra
           #create new user
           user = UserService.new.create(data)
           status 201
-          {:id => user.id}.to_json
+          user.to_json
         rescue IdentityError => e
           status 500
           return e.message.to_json

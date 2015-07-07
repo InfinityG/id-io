@@ -3,6 +3,7 @@ require './api/models/webhook'
 require './api/repositories/user_repository'
 require './api/services/hash_service'
 require './api/services/config_service'
+require './api/services/challenge_service'
 require './api/utils/rest_util'
 require './api/constants/error_constants'
 require './api/errors/identity_error'
@@ -12,15 +13,17 @@ class UserService
   include ErrorConstants::IdentityErrors
 
   def initialize(user_repository = UserRepository, hash_service = HashService,
-                 config_service = ConfigurationService, rest_util = RestUtil)
+                 config_service = ConfigurationService, challenge_service = ChallengeService,
+                 rest_util = RestUtil)
     @user_repository = user_repository.new
     @hash_service = hash_service.new
     @config_service = config_service.new
+    @challenge_service = challenge_service.new
     @rest_util = rest_util.new
   end
 
+  # register a new user
   def create(data)
-
     first_name = data[:first_name]
     last_name = data[:last_name]
     username = data[:username]
@@ -46,7 +49,10 @@ class UserService
     # send confirmation sms if this is required
     send_confirmation_sms(username, mobile_number) if confirm_mobile
 
-    user
+    # create a challenge on the response so that subsequent login doesn't require an additional challenge step
+    challenge_data = @challenge_service.create user
+
+    {:id => user.id, :username => user.username, :challenge => challenge_data}
   end
 
   #TODO: refactor this to handle paging

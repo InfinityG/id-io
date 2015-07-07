@@ -72,9 +72,7 @@ class IdentityService
     raise IdentityError, INVALID_PASSWORD if result != password_hash
   end
 
-  def validate_domain(data)
-    domain = data[:domain]
-
+  def validate_domain(domain)
     trust = @trust_service.get_by_domain(domain)
     raise IdentityError, DOMAIN_NOT_AUTHORIZED if trust == nil
 
