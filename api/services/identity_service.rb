@@ -82,15 +82,15 @@ class IdentityService
   def validate_challenge(user, challenge_data, challenge_signature)
     raise IdentityError, USER_NOT_FOUND if user == nil
 
-    # NOTE: incoming challenge data will be base64 encoded as this is the requirement for signing -
-    # we therefore need to base64 decode it to compare with the stored version!
-    decoded_challenge_data = Base64.decode64 challenge_data
-
     # check that the challenge has been issued (check db)
     challenge = @challenge_service.get_unexpired_by_username user.username
 
-    if (challenge == nil) || (challenge.data != decoded_challenge_data)
+    if challenge == nil
       raise IdentityError, INVALID_SIGNED_DATA
+    else
+      # compare the base64 encoded sha256 hashes
+      challenge_hash = @hash_service.generate_base64_sha256_hash challenge.data
+      raise IdentityError, INVALID_SIGNED_DATA if challenge_data != challenge_hash
     end
 
     # now validate the challenge signature itself

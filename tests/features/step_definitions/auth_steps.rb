@@ -1,6 +1,6 @@
 require 'json'
 require 'securerandom'
-require 'base64'
+require 'digest'
 require 'minitest'
 require 'ig-crypto-utils'
 
@@ -73,7 +73,7 @@ And(/^I have invalid challenge data$/) do
 end
 
 And(/^I have signed the challenge data$/) do
-  encoded_data = Base64.encode64 @challenge_result[:data]
+  encoded_data = Digest::SHA2.base64digest @challenge_result[:data]
   signed_data = CryptoUtils::EcdsaUtil.new.sign encoded_data, @encoded_secret_key
 
   payload = {
@@ -90,7 +90,7 @@ And(/^I have signed the challenge data$/) do
 end
 
 And(/^I have a missing challenge signature$/) do
-  encoded_data = Base64.encode64 @challenge_result[:data]
+  encoded_data = Digest::SHA2.base64digest @challenge_result[:data]
 
   payload = {
       :username => @username,
@@ -105,7 +105,7 @@ And(/^I have a missing challenge signature$/) do
 end
 
 And(/^I have an invalid challenge signature$/) do
-  encoded_data = Base64.encode64 @challenge_result[:data]
+  encoded_data = Digest::SHA2.base64digest @challenge_result[:data]
 
   payload = {
       :username => @username,
@@ -120,7 +120,7 @@ And(/^I have an invalid challenge signature$/) do
 end
 
 And(/^I have a missing username$/) do
-  encoded_data = Base64.encode64 @challenge_result[:data]
+  encoded_data = Digest::SHA2.base64digest @challenge_result[:data]
   signed_data = CryptoUtils::EcdsaUtil.new.sign encoded_data, @encoded_secret_key
 
   payload = {
@@ -136,7 +136,7 @@ And(/^I have a missing username$/) do
 end
 
 And(/^I have an invalid challenge username$/) do
-  encoded_data = Base64.encode64 @challenge_result[:data]
+  encoded_data = Digest::SHA2.base64digest @challenge_result[:data]
   signed_data = CryptoUtils::EcdsaUtil.new.sign encoded_data, @encoded_secret_key
 
   payload = {

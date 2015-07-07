@@ -1,6 +1,4 @@
 require 'json'
-require 'securerandom'
-require 'base64'
 require 'minitest'
 
 require_relative '../../../tests/config'

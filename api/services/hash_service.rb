@@ -9,6 +9,10 @@ class HashService
     @hash_generator.generate_password_hash password, salt
   end
 
+  def generate_base64_sha256_hash(data)
+    @hash_generator.generate_hash data
+  end
+
   def generate_salt
     @hash_generator.generate_salt
   end

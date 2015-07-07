@@ -1,5 +1,5 @@
 require 'json'
-require 'base64'
+require 'digest'
 require 'minitest'
 require 'ig-crypto-utils'
 require_relative '../../../tests/config'
@@ -71,13 +71,13 @@ And(/^the origin user has one or more connections$/) do
 end
 
 When(/^I send a connection confirmation request to the API$/) do
-  data = Base64.encode64 @origin_username
-  signature = CryptoUtils::EcdsaUtil.new.sign data, @target_secret_key
+  encoded_data = Digest::SHA2.base64digest @origin_username
+  signature = CryptoUtils::EcdsaUtil.new.sign encoded_data, @target_secret_key
 
   puts 'Target login token: ' + @target_login_token
 
   payload = {
-      :data => data,
+      :data => encoded_data,
       :signature => signature
   }.to_json
 
@@ -160,14 +160,14 @@ end
 
 def login_user(username, challenge, secret_key, trusted_domain)
   # sign the challenge
-  data = Base64.encode64 challenge
-  signature = CryptoUtils::EcdsaUtil.new.sign data, secret_key
+  encoded_data = Digest::SHA2.base64digest challenge
+  signature = CryptoUtils::EcdsaUtil.new.sign encoded_data, secret_key
 
   # now login
   payload = {
       :username => username,
       :challenge => {
-          :data => data,
+          :data => encoded_data,
           :signature => signature
       },
       domain: trusted_domain
@@ -191,12 +191,12 @@ def get_login_token(username, secret_key, trusted_domain)
 end
 
 def create_connection_request(origin_login_token, origin_secret_key, target_username)
-  data = Base64.encode64 target_username
-  signature = CryptoUtils::EcdsaUtil.new.sign data, origin_secret_key
+  encoded_data = Digest::SHA2.base64digest target_username
+  signature = CryptoUtils::EcdsaUtil.new.sign encoded_data, origin_secret_key
 
   payload = {
       :username => target_username,
-      :data => data,
+      :data => encoded_data,
       :signature => signature
   }.to_json
 
