@@ -83,12 +83,12 @@ the private (secret) key on behalf of the user.
   
 - Result:
     - The registration of a new user returns the user id, username, and a challenge that can be used for a subsequent 
-    login (see ['Login with a signed challenge'](#login-with-signed-challenge))
+    login (see [Login with a signed challenge](#login-with-signed-challenge))
   
   ```
   {
       "id": "5533a64db85a5467eb000001",
-      "username": "johnnymnemonic@test.com",
+      "username": "johnny_mnemonic@test.com",
       "challenge": {
           "data": "e1dfa83a-fafb-4be9-bba2-aaa7c77e12e7"
       }
@@ -96,7 +96,7 @@ the private (secret) key on behalf of the user.
   ```
     
 ### Create login challenge (for signature-based login)
-This endpoint is used to generate a challenge, which is must be signed for use in the subsequent login step. 
+This endpoint is used to generate a new challenge, which must be signed for use in the subsequent login step. 
 
 - Prerequisites:
   - User must be registered
