@@ -24,7 +24,7 @@ module ErrorConstants
     INVALID_DOMAIN = 'Invalid domain'
     NO_DATA_FOUND = 'No data found!'
     NO_CHALLENGE_FOUND = 'No challenge found!'
-    INVALID_DATA = 'Invalid data'
+    INVALID_DIGEST = 'Invalid digest'
     INVALID_SIGNATURE = 'Invalid challenge signature'
     INVALID_USER_ID = 'Invalid user id'
     INVALID_CONTACT_USER_ID = 'Invalid contact user id'

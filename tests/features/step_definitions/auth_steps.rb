@@ -73,14 +73,14 @@ And(/^I have invalid challenge data$/) do
 end
 
 And(/^I have signed the challenge data$/) do
-  encoded_data = Digest::SHA2.base64digest @challenge_result[:data]
-  signed_data = CryptoUtils::EcdsaUtil.new.sign encoded_data, @encoded_secret_key
+  digest = Digest::SHA2.base64digest @challenge_result[:data]
+  signature = CryptoUtils::EcdsaUtil.new.sign digest, @encoded_secret_key
 
   payload = {
       :username => @username,
       :challenge => {
-          :data => encoded_data,
-          :signature => signed_data
+          :digest => digest,
+          :signature => signature
       },
       :domain => @trusted_domain
   }.to_json
@@ -90,12 +90,12 @@ And(/^I have signed the challenge data$/) do
 end
 
 And(/^I have a missing challenge signature$/) do
-  encoded_data = Digest::SHA2.base64digest @challenge_result[:data]
+  digest = Digest::SHA2.base64digest @challenge_result[:data]
 
   payload = {
       :username => @username,
       :challenge => {
-          :data => encoded_data,
+          :digest => digest,
           :signature => nil
       },
       :domain => @trusted_domain
@@ -105,12 +105,12 @@ And(/^I have a missing challenge signature$/) do
 end
 
 And(/^I have an invalid challenge signature$/) do
-  encoded_data = Digest::SHA2.base64digest @challenge_result[:data]
+  digest = Digest::SHA2.base64digest @challenge_result[:data]
 
   payload = {
       :username => @username,
       :challenge => {
-          :data => encoded_data,
+          :digest => digest,
           :signature => 'ijfqipwunprcqnrc9pqyewborciquybroiqu'
       },
       :domain => @trusted_domain
@@ -120,14 +120,14 @@ And(/^I have an invalid challenge signature$/) do
 end
 
 And(/^I have a missing username$/) do
-  encoded_data = Digest::SHA2.base64digest @challenge_result[:data]
-  signed_data = CryptoUtils::EcdsaUtil.new.sign encoded_data, @encoded_secret_key
+  digest = Digest::SHA2.base64digest @challenge_result[:data]
+  signature = CryptoUtils::EcdsaUtil.new.sign digest, @encoded_secret_key
 
   payload = {
       :username => nil,
       :challenge => {
-          :data => encoded_data,
-          :signature => signed_data
+          :digest => digest,
+          :signature => signature
       },
       :domain => @trusted_domain
   }.to_json
@@ -136,14 +136,14 @@ And(/^I have a missing username$/) do
 end
 
 And(/^I have an invalid challenge username$/) do
-  encoded_data = Digest::SHA2.base64digest @challenge_result[:data]
-  signed_data = CryptoUtils::EcdsaUtil.new.sign encoded_data, @encoded_secret_key
+  digest = Digest::SHA2.base64digest @challenge_result[:data]
+  signature = CryptoUtils::EcdsaUtil.new.sign digest, @encoded_secret_key
 
   payload = {
       :username => 'fafhasdfoaisdhfids',
       :challenge => {
-          :data => encoded_data,
-          :signature => signed_data
+          :digest => digest,
+          :signature => signature
       },
       :domain => @trusted_domain
   }.to_json

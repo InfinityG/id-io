@@ -41,7 +41,7 @@ module Sinatra
       #   "username":"johndoe@test.com",
       #   "password":"password",  # absence of this requires the signed_challenge field
       #   "challenge":{
-      #           "data":"asaf98yqiwehdqsdlnqpodo",
+      #           "digest":"asaf98yqiwehdqsdlnqpodo",
       #           "signature":"ksndaihqiuwehfiuahsdfaisf"
       #         }
       #   "domain":"api.smartcontracts.com"   # relying party

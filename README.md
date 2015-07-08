@@ -129,7 +129,7 @@ This endpoint is used to login using a signed challenge. It is up to the client/
   - Client-side (javascript) signing can be done using the CryptocoinJS ECDSA library: http://cryptocoinjs.com/modules/crypto/ecdsa/#usage
     - Note that this is a NodeJS library but can be converted for use in the browser with the aid of Browserify (http://browserify.org/)
   - User must first create a challenge (see above step)
-  - The challenge must first be hashed (sha256) and then base64 encoded, before signing
+  - a digest must first be created from the challenge data (sha256 hash, base64 encoded), before signing
 - Uri: /login
 - Method: POST
 - Headers: none
@@ -139,7 +139,7 @@ This endpoint is used to login using a signed challenge. It is up to the client/
   {
     "username":"johnny_mnemonic@test.com",
     "challenge":{
-      "data":"YTc1NWNjZmQtOTgwOS00OWFkLTg5OTAtMTAyMGM5NjAyNGM3\n",
+      "digest":"YTc1NWNjZmQtOTgwOS00OWFkLTg5OTAtMTAyMGM5NjAyNGM3\n",
       "signature":"MEUCIBQ87YyGpFp97iVlVez5WuUGCnTeVd4hctArzma0pOe4AiEAuIEPWnea\nd4xYHaOXPDFECZdQRXrFMEsS2oNYLsShLB8=\n"
       },
     "fingerprint":"9f6e26a098b8db4a09b843ca9b074ccb",
@@ -195,13 +195,13 @@ request, and thus becomes added to the origin user's connections.
 - Headers: Authorization [auth_token] (this is the login token of the __origin user__)
 - Sample payload:
   - username: the username of the target user
-  - data: the base64 encoded username that will be signed
+  - data: the base64 encoded, sha256 hash of the username that will be signed
   - signature: the signed data (signed using the secret key of the __origin user__)
   
 ```
   {
     "username":"mranderson@matrix.com", 
-    "data":"YTc1NWNjZmQtOTgwOS00OWFkLTg5OTAtMTAyMGM5NjAyNGM3\n",
+    "digest":"YTc1NWNjZmQtOTgwOS00OWFkLTg5OTAtMTAyMGM5NjAyNGM3\n",
     "signature":"MEUCIBQ87YyGpFp97iVlVez5WuUGCnTeVd4hctArzma0pOe4AiEAuIEPWnea\nd4xYHaOXPDFECZdQRXrFMEsS2oNYLsShLB8=\n"
   }
 ```
@@ -274,12 +274,13 @@ not to approve a connection requested by another user(__origin__ user).
 - Method: POST
 - Headers: Authorization [auth_token]
 - Sample payload:
-  - data: the base64 encoded username of the connection origin user (in this case johnnymnemonic@test.com) that will be signed
-  - signature: the signed data (signed using the secret key of the __target user__)
+  - digest: sha256 hashed, base64 encoded username of the connection origin user (in this case johnnymnemonic@test.com) 
+  that will be signed
+  - signature: the signed digest (signed using the secret key of the __target user__)
   
 ```
   { 
-    "data":"YTc1NWNjZmQtOTgwOS00OWFkLTg5OTAtMTAyMGM5NjAyNGM3\n",
+    "digest":"YTc1NWNjZmQtOTgwOS00OWFkLTg5OTAtMTAyMGM5NjAyNGM3\n",
     "signature":"MEUCIBQ87YyGpFp97iVlVez5WuUGCnTeVd4hctArzma0pOe4AiEAuIEPWnea\nd4xYHaOXPDFECZdQRXrFMEsS2oNYLsShLB8=\n"
   }
 ```
@@ -313,10 +314,9 @@ can be read using a utility Ruby gem: https://rubygems.org/gems/ig-identity-rp-v
   {
     "id":"5533aecfb85a54687c000001",
     "username":"johnny_mnemonic@test.com",
-    "token":"ZTM1NDU4MmMtMzgyYi00ZmI0LWEwOTAtODM2YmEwYzIxZjQ0\n",
+    "digest":"ZTM1NDU4MmMtMzgyYi00ZmI0LWEwOTAtODM2YmEwYzIxZjQ0\n",
     "signature":"MEUCIH6v57kL9fFFJ3Gnbb3pMVw3PEUX3Pr2Ux3JdACMUj9iAiEAxPnN2Ouw\n8NMpk7w22vpabFJhuVboQ9ekUBfNWOu4Z6c=\n",
     "fingerprint":"9f6e26a098b8db4a09b843ca9b074ccb",
-    "role":"administrator",
     "expiry_date":1429454047,
     "ip_address":"0.0.0.0"
   }

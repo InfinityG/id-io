@@ -59,7 +59,7 @@ class IdentityService
     raise IdentityError, PUBLIC_KEY_NOT_REGISTERED if user.public_key.to_s == ''
 
     # validate the challenge
-    validate_challenge user, challenge[:data], challenge[:signature]
+    validate_challenge user, challenge[:digest], challenge[:signature]
 
     user
   end
@@ -79,7 +79,7 @@ class IdentityService
     trust
   end
 
-  def validate_challenge(user, challenge_data, challenge_signature)
+  def validate_challenge(user, digest, signature)
     raise IdentityError, USER_NOT_FOUND if user == nil
 
     # check that the challenge has been issued (check db)
@@ -90,17 +90,17 @@ class IdentityService
     else
       # compare the base64 encoded sha256 hashes
       challenge_hash = @hash_service.generate_base64_sha256_hash challenge.data
-      raise IdentityError, INVALID_SIGNED_DATA if challenge_data != challenge_hash
+      raise IdentityError, INVALID_SIGNED_DATA if digest != challenge_hash
     end
 
     # now validate the challenge signature itself
-    validate_signature challenge_data, challenge_signature, user.public_key
+    validate_signature digest, signature, user.public_key
 
   end
 
-  def validate_signature(data, signature, public_key)
+  def validate_signature(digest, signature, public_key)
     begin
-      unless @signature_service.validate_signature data, signature, public_key
+      unless @signature_service.validate_signature digest, signature, public_key
         raise IdentityError, INVALID_SIGNATURE
       end
     rescue OpenSSL::PKey::ECError
@@ -120,18 +120,18 @@ class IdentityService
 
     # create a token
     token = @token_service.create_token user.id, fingerprint
-    encoded_token_uuid = Base64.encode64 token.uuid
+    token_uuid_digest = @hash_service.generate_base64_sha256_hash token.uuid
 
-    # sign the token with the api secret key
-    signed_token = @signature_service.sign encoded_token_uuid, api_secret
+    # sign the token uuid digest with the api secret key
+    signature = @signature_service.sign token_uuid_digest, api_secret
 
     # create plaintext data to encrypt
     plaintext_data = {
         :id => user.id,
         :username => user.username,
-        :token => encoded_token_uuid,
+        :digest => token_uuid_digest,
+        :signature => signature,
         :fingerprint => token.fingerprint,
-        :signature => signed_token,
         :role => user.role,
         :expiry_date => token.expires,
         :ip_address => '0.0.0.0'

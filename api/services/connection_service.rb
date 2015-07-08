@@ -19,7 +19,7 @@ class ConnectionService
     public_key = current_user.public_key
 
     target_username = data[:username]
-    digest = data[:data]
+    digest = data[:digest]
     signature = data[:signature]
 
     # before we do anything we need to confirm the signature
@@ -52,7 +52,7 @@ class ConnectionService
   def update(connection_id, current_user, data)
     public_key = current_user.public_key
 
-    digest = data[:data]
+    digest = data[:digest]
     signature = data[:signature]
 
     # before we do anything we need to confirm the signature

@@ -108,7 +108,7 @@ class IdentityValidator
   def validate_signature_fields(data)
     errors = []
 
-    errors.push INVALID_DATA unless GeneralValidator.validate_base_64 data[:data]
+    errors.push INVALID_DIGEST unless GeneralValidator.validate_base_64 data[:digest]
     errors.push INVALID_SIGNATURE unless GeneralValidator.validate_base_64 data[:signature]
 
     errors
