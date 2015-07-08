@@ -195,8 +195,8 @@ request, and thus becomes added to the origin user's connections.
 - Headers: Authorization [auth_token] (this is the login token of the __origin user__)
 - Sample payload:
   - username: the username of the target user
-  - data: the base64 encoded, sha256 hash of the username that will be signed
-  - signature: the signed data (signed using the secret key of the __origin user__)
+  - digest: the base64 encoded, sha256 hash of the username that will be signed
+  - signature: the signed digest (signed using the secret key of the __origin user__)
   
 ```
   {
