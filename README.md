@@ -33,6 +33,21 @@ __PLEASE NOTE__: This code is still in alpha development. Some features are stil
 - MongoDB is required for the local backing store
 - A Docker file is included for quick deployments - note that the default deployment installs MongoDB in the same image
 
+## Signing
+
+ID-IO relies heavily on the [Elliptical Curve Digital Signature](https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm)
+ __(ECDSA)__ algorithm to perform signing and signature validation 
+operations. ECDSA is an __asymmetric encryption__ algorithm (or __public key encryption__ algorithm),
+meaning that it uses public and private (or 'secret') keys. A good understanding of public key cryptography is required 
+to perform signing operations correctly. 
+
+To make life easier, we have created a utility Ruby gem called 
+[ig_crypto_utils](https://rubygems.org/gems/ig-crypto-utils) which is used extensively in ID-IO, and can be used in any
+Ruby application to sign requests for use in ID-IO. 
+
+To sign requests on the front-end (ie: Javascript), a set of libraries called [CryptoCoinJS](http://cryptocoinjs.com/)
+is available.  
+
 ## API documentation
 
 ### Trust creation
