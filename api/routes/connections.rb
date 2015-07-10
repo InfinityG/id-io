@@ -13,7 +13,7 @@ module Sinatra
         content_type :json
 
         # confirm the current user
-        user_id = @current_user_id
+        user_id = @current_user.id
         current_user = UserService.new.get_by_id user_id
 
         halt 401, 'Unauthorized' if current_user == nil
@@ -44,7 +44,7 @@ module Sinatra
 
         connection_id = params[:connection_id]
 
-        user_id = @current_user_id
+        user_id = @current_user.id
         current_user = UserService.new.get_by_id user_id
 
         halt 401, 'Unauthorized' if current_user == nil
@@ -77,7 +77,7 @@ module Sinatra
         confirmed = params[:confirmed]
 
         begin
-          connections = ConnectionService.new.get_connections(@current_user_id, confirmed)
+          connections = ConnectionService.new.get_connections(@current_user, confirmed)
           status 200
           connections.to_json
         rescue IdentityError => e

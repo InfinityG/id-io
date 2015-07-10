@@ -82,22 +82,39 @@ class ConnectionService
   end
 
   # TODO: refactor this to be more efficient! (may need to refactor user model to embed connections)
-  def get_connections(origin_user_id, confirmed)
-    connections = @connection_repository.get_connections origin_user_id, confirmed
+  def get_connections(current_user, confirmed)
+
+    # get connections where the current user is either the target OR the origin
+    connections = @connection_repository.get_connections current_user.id.to_s, confirmed
 
     connections_arr = []
 
     connections.each do |connection|
-      user = @user_repository.get_user(connection.target_user_id)
+
+      connected_user = nil
+      connection_type = nil
+
+      # if the current user is the target, show the origin
+      if connection.target_user_id == current_user.id.to_s
+        connected_user = @user_repository.get_user(connection.origin_user_id)
+        connection_type = 'origin'
+      end
+
+      # if the current user is the origin, show the target
+      if connection.origin_user_id == current_user.id.to_s
+        connected_user = @user_repository.get_user(connection.target_user_id)
+        connection_type = 'target'
+      end
+
       connections_arr << {
           :id => connection.id,
           :confirmed => connection.confirmed,
           :user => {
-              :type => 'target',
-              :username => user.username,
-              :first_name => user.first_name,
-              :last_name => user.last_name,
-              :public_key => user.public_key
+              :type => connection_type,
+              :username => connected_user.username,
+              :first_name => connected_user.first_name,
+              :last_name => connected_user.last_name,
+              :public_key => connection.confirmed ? connected_user.public_key : nil
           }
       }
     end
@@ -109,7 +126,7 @@ class ConnectionService
     @connection_repository.get_connection_by_user_id origin_user_id, target_user_id
   end
 
-  def delete(domain)
+  def delete(connection)
     raise 'Connection delete not implemented'
   end
 

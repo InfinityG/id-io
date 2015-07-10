@@ -85,7 +85,7 @@ class IdentityValidator
       errors.concat validate_signature_fields data
     end
 
-    errors
+    raise ValidationError, {:valid => false, :errors => errors}.to_json if errors.count > 0
 
   end
 

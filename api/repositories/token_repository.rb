@@ -19,7 +19,7 @@ class TokenRepository
     Token.create(:user_id => user_id.to_s, :uuid => uuid, :fingerprint => fingerprint, :expires => expires)
   end
 
-  def delete_token(uuid)
-    Token.destroy(:uuid => uuid)
+  def delete_token(id)
+    Token.destroy(id)
   end
 end

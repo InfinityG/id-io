@@ -86,7 +86,7 @@ module Sinatra
       app.get '/users/associations' do
         content_type :json
 
-        user_id = @current_user_id
+        user_id = @current_user.id
         current_user = UserService.new.get_by_id user_id
 
         halt 401, 'Unauthorized' if current_user == nil

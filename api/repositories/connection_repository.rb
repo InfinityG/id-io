@@ -34,8 +34,9 @@ class ConnectionRepository
   # get connections for a particular user
   def get_connections(origin_user_id, confirmed)
     (confirmed != nil) ?
-        Connection.where(:origin_user_id => origin_user_id, :confirmed => confirmed).all :
-        Connection.where(:origin_user_id => origin_user_id).all
+    #User.where(:$or => [{:private => 1}, {:beta => 0}])
+        Connection.where(:$or => [{:origin_user_id => origin_user_id}, {:target_user_id => origin_user_id}], :confirmed => confirmed):
+        Connection.where(:$or => [{:origin_user_id => origin_user_id}, {:target_user_id => origin_user_id}])
   end
 
 end

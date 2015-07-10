@@ -58,7 +58,8 @@ module Sinatra
 
               halt 401, 'Unauthorized!' if user == nil
 
-              @current_user_id = token[:user_id]
+              @current_user = user
+              # @current_user_id = token[:user_id]
               @current_user_role = user[:role]
             end
           end

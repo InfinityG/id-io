@@ -21,7 +21,7 @@ class TokenService
     #check that the token hasn't expired, if it has, delete it
     if token != nil
       if token.expires <= Time.now.to_i
-        @token_repository.delete_token uuid
+        @token_repository.delete_token token.id
         return nil
       end
       return token
