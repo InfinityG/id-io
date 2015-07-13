@@ -43,17 +43,17 @@ And(/^I have an authentication token as a target user$/) do
 end
 
 When(/^I send a connection request to the API$/) do
-  @connection_create_result = create_connection_request(@origin_login_token, @origin_secret_key, @target_username)
+  @connection_result = create_connection_request(@origin_login_token, @origin_secret_key, @target_username)
 end
 
-And(/^the connection confirmed status should be false$/) do
-  assert @connection_create_result[:confirmed] == false
+And(/^the connection status should be "([^"]*)"$/) do |arg|
+  assert @connection_result[:status] == arg
 end
 
 And(/^I have an unconfirmed connection request$/) do
   @origin_login_token = get_login_token(@origin_username, @origin_secret_key, @trusted_domain)
-  @connection_create_result = create_connection_request(@origin_login_token, @origin_secret_key, @target_username)
-  @connection_id = @connection_create_result[:id]
+  @connection_result = create_connection_request(@origin_login_token, @origin_secret_key, @target_username)
+  @connection_id = @connection_result[:id]
 end
 
 And(/^the origin user has one or more connections$/) do
@@ -67,7 +67,7 @@ And(/^the origin user has one or more connections$/) do
   @target_public_key = keys[:pk]
   @register_target_result = register_user(first_name, last_name, @target_username, keys[:pk])
 
-  @connection_create_result = create_connection_request(@origin_login_token, @origin_secret_key, @target_username)
+  @connection_result = create_connection_request(@origin_login_token, @origin_secret_key, @target_username)
 end
 
 When(/^I send a connection confirmation request to the API$/) do
@@ -78,7 +78,8 @@ When(/^I send a connection confirmation request to the API$/) do
 
   payload = {
       :digest => digest,
-      :signature => signature
+      :signature => signature,
+      :status => 'connected'
   }.to_json
 
   puts "Confirm connection payload: #{payload}"
@@ -87,7 +88,7 @@ When(/^I send a connection confirmation request to the API$/) do
   puts "Confirm connection result: #{result.response_body}"
   puts "Response code: #{result.response_code}"
 
-  @connection_confirm_result = JSON.parse(result.response_body, :symbolize_names => true)
+  @connection_result = JSON.parse(result.response_body, :symbolize_names => true)
 end
 
 When(/^I send a get connection list request to the API$/) do
@@ -99,11 +100,7 @@ When(/^I send a get connection list request to the API$/) do
 end
 
 Then(/^the connection endpoint should respond with a connection id$/) do
-  assert @connection_create_result[:id] != nil
-end
-
-Then(/^the connection confirmed status should be true$/) do
-  assert @connection_confirm_result[:confirmed] == true
+  assert @connection_result[:id] != nil
 end
 
 Then(/^the connection endpoint should respond with a collection of connections$/) do

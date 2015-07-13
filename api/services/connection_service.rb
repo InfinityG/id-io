@@ -37,7 +37,7 @@ class ConnectionService
 
     {
         :id => result.id,
-        :confirmed => result.confirmed,
+        :status => result.status,
         :user => {
             :type => 'target',
             :username => target_user.username,
@@ -54,6 +54,7 @@ class ConnectionService
 
     digest = data[:digest]
     signature = data[:signature]
+    status = data[:status]
 
     # before we do anything we need to confirm the signature
     @identity_service.validate_signature digest, signature, public_key
@@ -66,12 +67,12 @@ class ConnectionService
     end
 
     # finally, confirm the connection request and update
-    connection.confirmed = true
+    connection.status = status
     @connection_repository.update connection
 
     {
         :id => connection.id,
-        :confirmed => connection.confirmed,
+        :status => connection.status,
         :user => {
             :type => 'origin',
             :user_id => connection.origin_user_id,
@@ -82,10 +83,10 @@ class ConnectionService
   end
 
   # TODO: refactor this to be more efficient! (may need to refactor user model to embed connections)
-  def get_connections(current_user, confirmed)
+  def get_connections(current_user, status)
 
     # get connections where the current user is either the target OR the origin
-    connections = @connection_repository.get_connections current_user.id.to_s, confirmed
+    connections = @connection_repository.get_connections current_user.id.to_s, status
 
     connections_arr = []
 
@@ -108,13 +109,13 @@ class ConnectionService
 
       connections_arr << {
           :id => connection.id,
-          :confirmed => connection.confirmed,
+          :status => connection.status,
           :user => {
               :type => connection_type,
               :username => connected_user.username,
               :first_name => connected_user.first_name,
               :last_name => connected_user.last_name,
-              :public_key => connection.confirmed ? connected_user.public_key : nil
+              :public_key => connection.status == 'connected' ? connected_user.public_key : nil
           }
       }
     end

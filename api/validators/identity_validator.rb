@@ -97,7 +97,10 @@ class IdentityValidator
     if data == nil
       errors.push NO_DATA_FOUND
     else
-      errors.push INVALID_CONFIRMATION unless GeneralValidator.validate_string_strict data[:confirmed]
+      status = data[:status]
+      errors.push INVALID_CONFIRMATION unless GeneralValidator.validate_string_strict status
+      errors.push INVALID_CONFIRMATION if (status != 'connected' || status != 'rejected' || status != 'disconnected' ||
+                                            status != 'pending')
       errors.concat validate_signature_fields data
     end
 

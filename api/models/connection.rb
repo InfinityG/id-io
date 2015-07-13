@@ -9,7 +9,8 @@ module SmartIdentity
       key :origin_username, String, :required => true
       key :target_user_id, String, :required => true
       key :target_username, String, :required => true
-      key :confirmed, Boolean
+      # key :confirmed, Boolean
+      key :status, String, :required => true
 
     end
   end

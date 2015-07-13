@@ -228,7 +228,7 @@ request, and thus becomes added to the origin user's connections.
 ```
 {
     "id": "7628aecfb85a54687c000001",
-    "confirmed": false,
+    "status": "pending",
     "user": {
         "type":"target",
         "username": "mranderson@matrix.com",
@@ -243,19 +243,19 @@ This endpoint retrieves all connections for a particular user.
 
 - Prerequisites:
   - User must be registered
-- Uri: /connections?confirmed={true/false}
+- Uri: /connections?status={'pending'/'connected'/'rejected'/'disconnected'}
 - Method: GET
 - Headers: Authorization [auth_token]
   
 - Result:
-    - The response contains a collection of connections, filtered by the 'confirmed' parameter (if present) 
+    - The response contains a collection of connections, filtered by the 'status' parameter (if present) 
     - Unconfirmed connections do not contain public signing keys
   
 ```
 [
     {
         "id": "7628aecfb85a54687c000001",
-        "confirmed": false,
+        "status": "pending",
         "user": {
             "type":"target",
             "username": "mranderson@matrix.com",
@@ -265,7 +265,7 @@ This endpoint retrieves all connections for a particular user.
     },
     {
         "id": "559a9db889e26c1a9a000014",
-        "confirmed": true,
+        "status": "connected",
         "user": {
             "type":"target",
             "username": "clark_kent@test.com",
@@ -284,7 +284,7 @@ not to approve a connection requested by another user(__origin__ user).
 - Prerequisites:
   - The user must be registered
   - A connection request must have been submitted by another user (the __origin__ user)
-  - Pending connections can be retrieved using the 'GET /connections?confirmed=false' endpoint
+  - Pending connections can be retrieved using the 'GET /connections?status=pending' endpoint
 - Uri: /connections/{connection_id}
 - Method: POST
 - Headers: Authorization [auth_token]
@@ -296,21 +296,22 @@ not to approve a connection requested by another user(__origin__ user).
 ```
   { 
     "digest":"YTc1NWNjZmQtOTgwOS00OWFkLTg5OTAtMTAyMGM5NjAyNGM3\n",
-    "signature":"MEUCIBQ87YyGpFp97iVlVez5WuUGCnTeVd4hctArzma0pOe4AiEAuIEPWnea\nd4xYHaOXPDFECZdQRXrFMEsS2oNYLsShLB8=\n"
+    "signature":"MEUCIBQ87YyGpFp97iVlVez5WuUGCnTeVd4hctArzma0pOe4AiEAuIEPWnea\nd4xYHaOXPDFECZdQRXrFMEsS2oNYLsShLB8=\n",
+    "status":"connected"
   }
 ```
   
 - Result:
     - The response contains:
-        - the connection id and confirmed status
+        - the connection id and status
         - the user type (in this case the __origin__ user)
         - the __origin__ user's details
-    - The 'confirmed' field value will be true if successfully confirmed 
+    - The 'status' field value will be 'connected' if successful 
   
 ```
 {
     "id": "7628aecfb85a54687c000001",
-    "confirmed": true,
+    "status": "connected",
     "user": {
         "type":"origin",
         "username": "johnnymnemonic@matrix.com",
