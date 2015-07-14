@@ -46,6 +46,10 @@ class UserRepository
                     registrar: registrar)
   end
 
+  def update_user(user)
+    user.save
+  end
+
   def delete_user(user_id)
     User.destroy(user_id)
   end

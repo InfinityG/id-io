@@ -12,12 +12,6 @@ module Sinatra
       app.post '/connections' do
         content_type :json
 
-        # confirm the current user
-        user_id = @current_user.id
-        current_user = UserService.new.get_by_id user_id
-
-        halt 401, 'Unauthorized' if current_user == nil
-
         data = JSON.parse(request.body.read, :symbolize_names => true)
 
         begin
@@ -28,7 +22,7 @@ module Sinatra
         end
 
         begin
-          connection = ConnectionService.new.create(current_user, data)
+          connection = ConnectionService.new.create(@current_user, data)
           status 201
           connection.to_json
         rescue IdentityError => e
@@ -43,12 +37,6 @@ module Sinatra
         content_type :json
 
         connection_id = params[:connection_id]
-
-        user_id = @current_user.id
-        current_user = UserService.new.get_by_id user_id
-
-        halt 401, 'Unauthorized' if current_user == nil
-
         data = JSON.parse(request.body.read, :symbolize_names => true)
 
         begin
@@ -60,7 +48,7 @@ module Sinatra
         end
 
         begin
-          connection = ConnectionService.new.update(connection_id, current_user, data)
+          connection = ConnectionService.new.update(connection_id, @current_user, data)
           status 201
           connection.to_json
         rescue IdentityError => e

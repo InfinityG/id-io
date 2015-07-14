@@ -62,3 +62,17 @@ And(/^an error message of "([^"]*)"$/) do |arg|
   assert errors[0] == arg
 end
 
+
+# update steps
+
+And(/^a new password$/) do
+  pending
+end
+
+And(/^a new public ECDSA key$/) do
+  pending
+end
+
+When(/^I send an update request to the API$/) do
+  pending
+end

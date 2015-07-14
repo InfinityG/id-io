@@ -8,6 +8,10 @@ module Sinatra
   module UserRoutes
     def self.registered(app)
 
+      ########################
+      # CREATE a new user
+      ########################
+
       app.post '/users' do
         content_type :json
 
@@ -23,6 +27,38 @@ module Sinatra
         begin
           #create new user
           user = UserService.new.create(data)
+          status 201
+          user.to_json
+        rescue IdentityError => e
+          status 500
+          return e.message.to_json
+        end
+
+      end
+
+      ########################
+      # UPDATE a user (partial update so POST)
+      ########################
+
+      app.post '/users/:username' do
+        content_type :json
+
+        #  ensure that the current logged in user is attempting to update his own data
+        username = params[:username]
+        halt 401, 'Unauthorized' if username != @current_user.username
+
+        data = JSON.parse(request.body.read, :symbolize_names => true)
+
+        begin
+          IdentityValidator.new.validate_user_update data
+        rescue ValidationError => e
+          status 400 # bad request
+          return e.message
+        end
+
+        begin
+          #create new user
+          user = UserService.new.update(@current_user, data)
           status 201
           user.to_json
         rescue IdentityError => e

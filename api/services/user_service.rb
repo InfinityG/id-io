@@ -4,6 +4,7 @@ require './api/repositories/user_repository'
 require './api/services/hash_service'
 require './api/services/config_service'
 require './api/services/challenge_service'
+require './api/services/identity_service'
 require './api/utils/rest_util'
 require './api/constants/error_constants'
 require './api/errors/identity_error'
@@ -14,11 +15,12 @@ class UserService
 
   def initialize(user_repository = UserRepository, hash_service = HashService,
                  config_service = ConfigurationService, challenge_service = ChallengeService,
-                 rest_util = RestUtil)
+                 identity_service = IdentityService, rest_util = RestUtil)
     @user_repository = user_repository.new
     @hash_service = hash_service.new
     @config_service = config_service.new
     @challenge_service = challenge_service.new
+    @identity_service = identity_service.new
     @rest_util = rest_util.new
   end
 
@@ -76,11 +78,29 @@ class UserService
     @user_repository.get_associated_users_by_username username
   end
 
-  def update(user)
-    #TODO: update the DB - username is the identifier and cannot be changed
-    #raise 'User update not implemented'
+  def update(current_user, data)
+    # first validate the signature
+    digest = data[:digest]
+    signature = data[:signature]
 
-    user.save
+    # before we do anything we need to confirm the signature
+    @identity_service.validate_signature digest, signature, current_user.public_key
+
+    # the new values for password and public key
+    password = data[:password]
+    public_key = data[:public_key]
+
+    # create salt and hash
+    salt = @hash_service.generate_salt
+    hashed_password = @hash_service.generate_password_hash password, salt
+
+    # now save
+    current_user.password_salt = salt
+    current_user.password_hash = hashed_password
+    current_user.public_key = public_key
+    @user_repository.update_user current_user
+
+    {:id => current_user.id, :username => current_user.username}
   end
 
   def delete(username)

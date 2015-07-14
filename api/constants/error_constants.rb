@@ -12,7 +12,12 @@ module ErrorConstants
     INVALID_DOMAIN = 'Invalid domain'
     INVALID_AES_KEY = 'Invalid AES key'
     INVALID_USER_ID = 'Invalid user id'
-    CONTACT_NOT_FOUND = 'Contact cannot be found'
+    CONNECTION_NOT_FOUND = 'Contact cannot be found'
+    CONNECTION_ALREADY_EXISTS = 'A connection already exists between these users'
+    INVALID_CONNECTION_STATUS = 'Invalid connection status'
+    CONNECTION_UNAUTHORISED = 'Connection unauthorised'
+    DISCONNECTION_UNAUTHORISED = 'Connection disconnection unauthorised'
+    REJECTION_UNAUTHORISED = 'Connection rejection unauthorised'
   end
 
   module ValidationErrors
@@ -27,7 +32,7 @@ module ErrorConstants
     INVALID_DIGEST = 'Invalid digest'
     INVALID_SIGNATURE = 'Invalid challenge signature'
     INVALID_USER_ID = 'Invalid user id'
-    INVALID_CONTACT_USER_ID = 'Invalid contact user id'
+    INVALID_CONNECTION_USER_ID = 'Invalid contact user id'
     INVALID_CONFIRMATION = 'Invalid confirmation'
   end
 end

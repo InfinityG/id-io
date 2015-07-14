@@ -16,7 +16,8 @@ Feature: Register a new user
     And a username
     And a password
     When I send a registration request to the API
-    Then the registration endpoint should respond with a user id
+    Then the registration endpoint should respond with a 400 response code
+    And an error message of "Invalid public key"
 
   Scenario: Register user with missing first name
     Given a last name
