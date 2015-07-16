@@ -87,20 +87,25 @@ class UserService
     @identity_service.validate_signature digest, signature, current_user.public_key
 
     # the new values for password and public key
-    password = data[:password]
-    public_key = data[:public_key]
+    password = data[:password].to_s
+    public_key = data[:public_key].to_s
 
-    # create salt and hash
-    salt = @hash_service.generate_salt
-    hashed_password = @hash_service.generate_password_hash password, salt
+    if password != ''
+      # create salt and hash
+      salt = @hash_service.generate_salt
+      hashed_password = @hash_service.generate_password_hash password, salt
+      current_user.password_salt = salt
+      current_user.password_hash = hashed_password
+    end
+
+    if public_key != ''
+      current_user.public_key = public_key
+    end
 
     # now save
-    current_user.password_salt = salt
-    current_user.password_hash = hashed_password
-    current_user.public_key = public_key
     @user_repository.update_user current_user
 
-    {:id => current_user.id, :username => current_user.username}
+    {:id => current_user.id, :username => current_user.username, :public_key => current_user.public_key}
   end
 
   def delete(username)

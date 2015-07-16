@@ -34,10 +34,16 @@ class IdentityValidator
       errors.push NO_DATA_FOUND
     else
 
-      #fields
-      errors.push INVALID_PASSWORD unless GeneralValidator.validate_password data[:password]
+      # if no password or public key then there is nothing to update!
+      errors.push NO_DATA_FOUND if data[:public_key].to_s == '' && data[:password].to_s == ''
 
+      # password is not required, but if present, must be valid
+      errors.push INVALID_PASSWORD unless GeneralValidator.validate_password data[:password] if data[:password].to_s != ''
+
+      # public key is not required, but if present, must be valid
       errors.concat validate_public_key data
+
+      # signature is required
       errors.concat validate_signature_fields data
 
       raise ValidationError, {:valid => false, :errors => errors}.to_json if errors.count > 0

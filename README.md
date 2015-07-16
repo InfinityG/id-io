@@ -111,6 +111,36 @@ the private (secret) key on behalf of the user.
       }
   }
   ```
+  
+### Update User details
+This endpoint is used to update the user's details - it is currently restricted to the __public key__ only. This means that
+a user can regenerate their public/secret key pairs (in the case of key compromise) and ensure that ID-IO has updated
+public keys.
+
+- Prerequisites:
+    - User must be registered
+    - User must have logged in (see login process below) and obtained an auth token
+- Uri: /users/{username}
+- Method: POST
+- Headers: Authorization: [auth token]
+- Sample payload: 
+  
+  ```
+  {
+    "public_key":"Ag7PunGy2BmnAi+PGE4/Dm9nCg1URv8wLZwSOggyfmAn"
+  }
+  ```
+  
+- Result:
+    - The registration of a new user returns the user id, username, and a challenge that can be used for a subsequent 
+    login (see [Login with a signed challenge](#login-with-signed-challenge))
+  
+  ```
+  {
+    "id":"559e7b7bb85a54456f00005d",
+    "username":"johnny_mnemonic@test.com"
+  }
+  ```
     
 ### Create login challenge (for signature-based login)
 This endpoint is used to generate a new challenge, which must be signed for use in the subsequent login step. 
