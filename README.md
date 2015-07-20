@@ -47,8 +47,8 @@ To make life easier, we have created a utility Ruby gem called
 [ig_crypto_utils](https://rubygems.org/gems/ig-crypto-utils) which is used extensively in ID-IO, and can be used in any
 Ruby application to sign requests for use in ID-IO. 
 
-To sign requests on the front-end (ie: Javascript), a set of libraries called [CryptoCoinJS](http://cryptocoinjs.com/)
-is available.  
+To sign requests on the front-end (ie: Javascript), we've also created a library called [ig-js-utils](https://github.com/InfinityG/ig-js-utils),
+which is itself based on libraries produced by [CryptoCoinJS](http://cryptocoinjs.com/).
 
 ## API documentation
 
