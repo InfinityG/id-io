@@ -44,7 +44,7 @@ meaning that it uses public and private (or 'secret') keys. A good understanding
 to perform signing operations correctly. 
 
 To make life easier, we have created a utility Ruby gem called 
-[ig_crypto_utils](https://rubygems.org/gems/ig-crypto-utils) which is used extensively in ID-IO, and can be used in any
+[ig-crypto-utils](https://rubygems.org/gems/ig-crypto-utils) which is used extensively in ID-IO, and can be used in any
 Ruby application to sign requests for use in ID-IO. 
 
 To sign requests on the front-end (ie: Javascript), we've also created a library called [ig-js-utils](https://github.com/InfinityG/ig-js-utils),
