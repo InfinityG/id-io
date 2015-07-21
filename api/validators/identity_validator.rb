@@ -9,6 +9,24 @@ class IdentityValidator
   include ErrorConstants::ValidationErrors
   include ValidatorUtils
 
+  def validate_trust(data)
+    errors = []
+
+    if data == nil
+      errors.push NO_DATA_FOUND
+    else
+      #fields
+      errors.push INVALID_DOMAIN unless GeneralValidator.validate_string data[:domain]
+      errors.push INVALID_AES_KEY unless GeneralValidator.validate_base_64 data[:aes_key]
+
+      if data[:login_uri].to_s != ''
+        errors.push INVALID_LOGIN_URI unless GeneralValidator.validate_uri data[:login_uri]
+      end
+
+      raise ValidationError, {:valid => false, :errors => errors}.to_json if errors.count > 0
+    end
+  end
+
   def validate_new_user(data)
     errors = []
 
@@ -73,7 +91,10 @@ class IdentityValidator
     errors.push INVALID_USERNAME unless GeneralValidator.validate_username_strict data[:username]
     errors.push INVALID_PASSWORD unless GeneralValidator.validate_password data[:password]
     errors.push INVALID_DOMAIN unless GeneralValidator.validate_string_strict data[:domain]
-    # errors.push INVALID_REDIRECT unless GeneralValidator.validate_boolean data[:redirect]
+
+    if data[:redirect].to_s != ''
+      errors.push INVALID_REDIRECT unless GeneralValidator.validate_boolean data[:redirect]
+    end
 
     errors
   end

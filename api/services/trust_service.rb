@@ -11,11 +11,11 @@ class TrustService
     @trust_repository = trust_repository.new
   end
 
-  def create_or_update(domain, aes_key)
+  def create_or_update(domain, aes_key, login_uri)
     raise IdentityError, INVALID_DOMAIN if domain.to_s == ''
     raise IdentityError, INVALID_AES_KEY if aes_key.to_s == ''
 
-    @trust_repository.create_or_update_trust domain, aes_key
+    @trust_repository.create_or_update_trust domain, aes_key, login_uri
 
   end
 

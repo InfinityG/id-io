@@ -72,18 +72,9 @@ module Sinatra
           user = user_service.get_by_username(username)
           identity_service.validate_login_data user, data
           trust = identity_service.validate_domain domain
-          auth = identity_service.generate_auth user, fingerprint, trust
+          auth = identity_service.generate_auth user, fingerprint, trust, redirect
 
-          result = auth.to_json
-
-          # if redirect == true, redirect to the domain login uri, with the escaped JSON auth on the querystring
-          # if (redirect != null) && (redirect)
-          #   escaped_auth = Rack::Utils.escape_html result
-          #   redirect "#{trust.login_url}?auth=#{escaped_auth}"
-          # end
-
-          result
-
+          auth.to_json
         rescue IdentityError => e
           status 401
           e.message.to_json

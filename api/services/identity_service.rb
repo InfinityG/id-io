@@ -113,7 +113,7 @@ class IdentityService
     @challenge_service.delete(user.username) if user != nil
   end
 
-  def generate_auth(user, fingerprint, trust)
+  def generate_auth(user, fingerprint, trust, redirect)
 
     # get the api secret
     api_secret = @configuration_service.get_config[:api_secret_ecdsa_key]
@@ -140,8 +140,16 @@ class IdentityService
     encoded_plaintext_data = Base64.encode64 plaintext_data
 
     result = @cipher_service.aes_encrypt encoded_plaintext_data, trust.aes_key
-    {:token => token.uuid, :auth => result[:cipher_text], :iv => result[:iv]}
+    auth = {:token => token.uuid, :auth => result[:cipher_text], :iv => result[:iv]}
 
+    # if redirect == true, redirect to the domain login uri, with the escaped JSON auth on the querystring
+    if (redirect != nil) && (redirect)
+      base64_escaped_auth = URI.escape(Base64.encode64(auth.to_json))
+      redirect_uri = "#{trust.login_uri}/#{user.username}/#{base64_escaped_auth}"
+      return {:redirect_uri => redirect_uri}
+    end
+
+    auth
   end
 
 end

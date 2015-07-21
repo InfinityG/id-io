@@ -43,7 +43,8 @@ And(/^I want to login to a trusted domain$/) do
 
   payload = {
       :domain => @trusted_domain,
-      :aes_key => @encoded_domain_aes_key
+      :aes_key => @encoded_domain_aes_key,
+      :login_uri => "https://#{@trusted_domain}/login"
   }.to_json
 
   puts "Create trusted domain payload: #{payload}"
@@ -87,6 +88,12 @@ And(/^I have signed the challenge data$/) do
 
   @signed_challenge = payload
 
+end
+
+And(/^I want to redirect to a 3rd party on login$/) do
+  current_challenge = JSON.parse(@signed_challenge, :symbolize_names => true)
+  current_challenge[:redirect] = true
+  @signed_challenge = current_challenge.to_json
 end
 
 And(/^I have a missing challenge signature$/) do
@@ -182,11 +189,12 @@ end
 Then(/^the login endpoint should respond with an encrypted auth response$/) do
   assert @login_result[:auth] != nil
   assert @login_result[:iv] != nil
-end
+  end
 
+Then(/^the login endpoint should respond with a redirection uri$/) do
+  assert @login_result[:redirect_uri] != nil
+end
 
 Then(/^the login endpoint should respond with a (\d+) response code$/) do |arg|
   assert @login_response_code.to_s == arg.to_s
 end
-
-
