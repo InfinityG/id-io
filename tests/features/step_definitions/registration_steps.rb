@@ -13,7 +13,7 @@ And(/^a last name$/) do
 end
 
 And(/^a username$/) do
-  @username =  "#{@first_name}_#{@last_name}@test.com"
+  @username =  "#{@first_name}_#{@last_name}"
 end
 
 And(/^a password$/) do
@@ -28,6 +28,11 @@ And(/^a public ECDSA key$/) do
   @encoded_public_key = 'Ag7PunGy2BmnAi+PGE4/Dm9nCg1URv8wLZwSOggyfmAn' # already base64 encoded
 end
 
+And(/^an email address$/) do
+  @email = "#{@first_name}_#{@last_name}@test.com"
+end
+
+
 When(/^I send a registration request to the API$/) do
   @auth_header = IDENTITY_API_AUTH_KEY
 
@@ -36,7 +41,8 @@ When(/^I send a registration request to the API$/) do
       :last_name => @last_name,
       :username => @username,
       :password => @password,
-      :public_key => @encoded_public_key
+      :public_key => @encoded_public_key,
+      :email => @email
   }.to_json
 
   puts "Create user payload: #{payload}"

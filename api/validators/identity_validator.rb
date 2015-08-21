@@ -19,9 +19,7 @@ class IdentityValidator
       errors.push INVALID_DOMAIN unless GeneralValidator.validate_string data[:domain]
       errors.push INVALID_AES_KEY unless GeneralValidator.validate_base_64 data[:aes_key]
 
-      if data[:login_uri].to_s != ''
-        errors.push INVALID_LOGIN_URI unless GeneralValidator.validate_uri data[:login_uri]
-      end
+      errors.push INVALID_LOGIN_URI unless GeneralValidator.validate_uri data[:login_uri] if data[:login_uri].to_s != ''
 
       raise ValidationError, {:valid => false, :errors => errors}.to_json if errors.count > 0
     end
@@ -38,6 +36,8 @@ class IdentityValidator
       errors.push INVALID_LAST_NAME unless GeneralValidator.validate_string_strict data[:last_name]
       errors.push INVALID_USERNAME unless GeneralValidator.validate_username_strict data[:username]
       errors.push INVALID_PASSWORD unless GeneralValidator.validate_password data[:password]
+
+      errors.push INVALID_EMAIL unless GeneralValidator.validate_email data[:email] if data[:email].to_s != ''
 
       errors.concat validate_public_key data
 

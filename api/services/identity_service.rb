@@ -129,6 +129,9 @@ class IdentityService
     plaintext_data = {
         :id => user.id,
         :username => user.username,
+        :first_name => user.first_name,
+        :last_name => user.last_name,
+        :email => user.email,
         :digest => token_uuid_digest,
         :signature => signature,
         :fingerprint => token.fingerprint,

@@ -7,6 +7,7 @@ Feature: Register a new user
     And a username
     And a password
     And a public ECDSA key
+    And an email address
     When I send a registration request to the API
     Then the registration endpoint should respond with a user id
 

@@ -25,6 +25,7 @@ module ErrorConstants
     INVALID_LAST_NAME = 'Invalid last name'
     INVALID_USERNAME = 'Invalid username'
     INVALID_PASSWORD = 'Invalid password. Minimum 8 characters length, with at least 1 upper case, 1 numeric and 1 special character'
+    INVALID_EMAIL = 'Invalid email address'
     INVALID_PUBLIC_KEY = 'Invalid public key'
     INVALID_DOMAIN = 'Invalid domain'
     INVALID_REDIRECT = 'Invalid redirect'

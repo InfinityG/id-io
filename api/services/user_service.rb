@@ -30,6 +30,7 @@ class UserService
     last_name = data[:last_name]
     username = data[:username]
     password = data[:password]
+    email = data[:email]
     public_key = data[:public_key]
     role = data[:role]
     mobile_number = data[:mobile_number]
@@ -46,7 +47,7 @@ class UserService
 
     # save user
     user = @user_repository.save_user first_name, last_name, username, salt, hashed_password,
-                                      public_key, role, mobile_number, webhooks, registrar
+                                      public_key, email, role, mobile_number, webhooks, registrar
 
     # send confirmation sms if this is required
     send_confirmation_sms(username, mobile_number) if confirm_mobile
