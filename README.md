@@ -43,12 +43,22 @@ operations. ECDSA is an __asymmetric encryption__ algorithm (or __public key enc
 meaning that it uses public and private (or 'secret') keys. A good understanding of public key cryptography is required 
 to perform signing operations correctly. 
 
+### Libraries
+
+#### Ruby
+
 To make life easier, we have created a utility Ruby gem called 
 [ig-crypto-utils](https://rubygems.org/gems/ig-crypto-utils) which is used extensively in ID-IO, and can be used in any
 Ruby application to sign requests for use in ID-IO. 
 
+#### Javascript
+
 To sign requests on the front-end (ie: Javascript), we've also created a library called [ig-js-utils](https://github.com/InfinityG/ig-js-utils),
 which is itself based on libraries produced by [CryptoCoinJS](http://cryptocoinjs.com/).
+
+#### Objective-C
+
+A third party library for Objective-C by Richard Moore can be found at [GMEllipticCurveCrypto](https://github.com/ricmoo/GMEllipticCurveCrypto).
 
 ## API documentation
 
