@@ -11,7 +11,7 @@ __PLEASE NOTE__: This code is still in alpha development. Some features are stil
     - Authentication of users, using a hybrid Oauth 2.0 workflow
         - *Although this already complies broadly with the [Oauth 2.0 specification](https://tools.ietf.org/html/rfc6749),
             work is ongoing to ensure full compliance*
-    - Connecting to other users ('friend' requests)
+    - Connecting to other users ('connection' requests)
     - Generation of signed and encrypted tokens for consumption by Relying Parties
 - __Basic Single Sign-On functionality__
   - SSO authentication support for the following combinations:
