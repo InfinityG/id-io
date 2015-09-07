@@ -9,7 +9,7 @@ __PLEASE NOTE__: This code is still in alpha development. Some features are stil
     - Creation of trusts between id-io API and Relying Parties
     - Registration of user identities
     - Authentication of users, using a hybrid Oauth 2.0 workflow
-        - *Although this already complies generally with the [Oauth 2.0 specification](https://tools.ietf.org/html/rfc6749),
+        - *Although this already complies broadly with the [Oauth 2.0 specification](https://tools.ietf.org/html/rfc6749),
             work is ongoing to ensure full compliance*
     - Connecting to other users ('friend' requests)
     - Generation of signed and encrypted tokens for consumption by Relying Parties
