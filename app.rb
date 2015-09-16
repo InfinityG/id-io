@@ -34,9 +34,9 @@ class ApiApp < Sinatra::Base
     MongoMapper.connection = Mongo::MongoClient.new(config[:mongo_host], config[:mongo_port])
     MongoMapper.database = config[:mongo_db]
 
-    if config[:mongo_host] != 'localhost'
-      MongoMapper.database.authenticate(config[:mongo_db_user], config[:mongo_db_password])
-    end
+    # if config[:mongo_host] != 'localhost'
+    #   MongoMapper.database.authenticate(config[:mongo_db_user], config[:mongo_db_password])
+    # end
 
   end
 
