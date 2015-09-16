@@ -26,12 +26,9 @@ module Sinatra
             # look up the user identified by the number;
             # get the webhook (if there is one);
             # execute a request to the webhook endpoint(s)
-            user_service = UserService.new
-            user = user_service.get_by_username_and_mobile_number(username, number)
-
-            if user != nil
-              user.mobile_confirmed = true
-              user_service.update user
+            begin
+              user_service = UserService.new
+              user_service.confirm_mobile username, number
 
               # now handle the webhooks if there are any;
               # eg: signing a contract condition
@@ -43,6 +40,10 @@ module Sinatra
                   RestUtil.new.execute_post(uri, auth_header, body)
                 end
               end
+
+            rescue
+
+
             end
 
           end

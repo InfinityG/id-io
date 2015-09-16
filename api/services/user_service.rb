@@ -109,6 +109,24 @@ class UserService
     {:id => current_user.id, :username => current_user.username, :public_key => current_user.public_key}
   end
 
+  def confirm_mobile(username, mobile_number)
+    user = get_by_username(username)
+    raise IdentityError, USER_NOT_FOUND if user == nil
+    raise IdentityError, INVALID_MOBILE_FOR_USER if user.mobile_number != mobile_number
+
+    user.mobile_confirmed = true
+    @user_repository.update_user user
+    end
+
+  def confirm_email(username, email)
+    user = get_by_username(username)
+    raise IdentityError, USER_NOT_FOUND if user == nil
+    raise IdentityError, INVALID_EMAIL_FOR_USER if user.email != email
+
+    user.email_confirmed = true
+    @user_repository.update_user user
+  end
+
   def delete(username)
     #TODO: delete from the DB - username is the identifier
     raise 'User delete not implemented'

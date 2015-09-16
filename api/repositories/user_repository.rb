@@ -60,7 +60,10 @@ class UserRepository
 
     if webhooks != nil && webhooks.count > 0
       webhooks.each do |webhook|
-        webhook_arr << Webhook.new(:uri => webhook[:uri], :headers => webhook[:headers], :body => webhook[:body])
+        webhook_arr << Webhook.new(:type => webhook[:type],
+                                   :uri => webhook[:uri],
+                                   :headers => webhook[:headers],
+                                   :body => webhook[:body])
       end
     end
     webhook_arr
