@@ -31,7 +31,7 @@ module ConfigurationConstants
         :api_auth_token => ENV['API_AUTH_TOKEN'],
         :api_secret_ecdsa_key => ENV['API_SECRET_KEY'],
         :api_public_ecdsa_key => ENV['API_PUBLIC_KEY'],
-        :mongo_host => 'localhost',
+        :mongo_host => ENV['MONGO_HOST'],
         :mongo_port => 27017, # default is 27017
         :mongo_db => ENV['MONGO_DB'],
         :logger_file => 'app_log.log',
