@@ -399,8 +399,8 @@ could allow an attacker to login to the relying party.
 [TODO]
 
 ## Caveats and hidden costs
-- Any blockchain integration will incur costs over and above hosting and operational costs of ID-IO and its associated datastore. This is because in order to transact on a blockchain, whether Bitcoin, Ripple, Ethereum etc., the particular currency of the network will need to be purchased. This needs to be done via a cryptocurrency gateway, which is regulated and comes with its own set of requirements.
-- If you choose to use a hosted cryptocurrency network node, such as [Ripple REST](https://ripple.com/build/ripple-rest/), this will again incur hosting and network charges. There are 
+- Any blockchain integration will incur costs over and above hosting and operational costs of ID-IO and its associated datastore. In order to transact on a blockchain network, whether Bitcoin, Ripple, Ethereum etc., the particular currency of the network will need to be purchased. This needs to be done via a cryptocurrency gateway, which is regulated and comes with its own set of KYC requirements.
+- If you choose to host your own cryptocurrency network node, such as [Ripple REST](https://ripple.com/build/ripple-rest/), this will incur hosting and network charges.
 
 ## Appendix
 
