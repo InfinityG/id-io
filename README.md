@@ -431,15 +431,17 @@ originally registered with (which as described above, is embedded in the blockch
 
 The choice of blockchain is still in flux, with the following options:
 
-- __Bitcoin__: The original blockchain, which allows for the storage of small pieces of information in transaction records (in our case the "master" identity record)
+- __Bitcoin__: The 'original' blockchain
  - Uses "proof of work" (performed by "mining") as transaction verification mechanism
  - Strong focus on the currency itself (BTC) - a single decentralised currency on the Bitcoin network
  - Has the longest track record, and is the most widely used
  - The "proof of work" mechanism is highly energy intensive (and thus costly) and slower than some other mechanisms (such as "consensus" in Ripple)
+ - Small pieces of custom data can be embedded in each transaction
  - An identity and DNS ownership platform that currently uses Bitcoin is __Namecoin__ 
 
-- __Ripple__: A newer blockchain network, which also allows for the storage of small pieces of information in transaction records (in our case the "master" identity record)
+- __Ripple__: A newer blockchain network
   - Uses a "consensus" mechanism to verify transactions, which is faster than "proof of work" and more energy efficient
+  - Small pieces of custom data can be embedded in each transaction
   - Strong focus on the transaction network and protocol, rather than a specific currency. Any currency can be issued and transacted (including custom currencies and Bitcoin itself), although Ripple's native currency, XRP, is required in very small amounts to perform transactions (this is to prevent DDOS-type attacks on the network)
   
 - __Ethereum__: A decentralised network of computational services on a blockchain
