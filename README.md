@@ -397,6 +397,14 @@ could allow an attacker to login to the relying party.
 
 ## Appendix
 
+### Configuration
+
+Configuration for the API is set in the *__/api/constants/configuration_constants.rb__* file. Sensitive values are retrieved from relevant environment variables set on the host. When running a container using __Docker__, introduce these environment variables via the command line, eg:
+
+```
+sudo docker run -e API_AUTH_TOKEN=********* -e API_SECRET_KEY=********** -e API_PUBLIC_KEY=******* -e MONGO_HOST=10.0.0.123 -e MONGO_DB=id-io -e SMS_API_AUTH_TOKEN=********* -p 9002:9002 -it --rm infinityg/id-io:v1
+```
+
 ### Why blockchain?
 
 When a user registers on ID-IO, the action of creating a record (in a NoSQL or DHT datastore) is recorded in a __blockchain transaction__.
