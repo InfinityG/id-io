@@ -12,7 +12,7 @@ module ErrorConstants
     INVALID_DOMAIN = 'Invalid domain'
     INVALID_AES_KEY = 'Invalid AES key'
     INVALID_USER_ID = 'Invalid user id'
-    INVALID_MOBILE_FOR_USER = 'Invalid mobile for user'
+    INVALID_MOBILE_FOR_USER = 'Invalid mobile for user. Country code prefix required (eg: +27 830000000)'
     INVALID_EMAIL_FOR_USER = 'Invalid email for user'
     CONNECTION_NOT_FOUND = 'Contact cannot be found'
     CONNECTION_ALREADY_EXISTS = 'A connection already exists between these users'
