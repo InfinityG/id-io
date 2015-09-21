@@ -38,6 +38,7 @@ class IdentityValidator
       errors.push INVALID_PASSWORD unless GeneralValidator.validate_password data[:password]
 
       errors.push INVALID_EMAIL unless GeneralValidator.validate_email data[:email] if data[:email].to_s != ''
+      errors.push INVALID_MOBILE unless GeneralValidator.validate_mobile data[:mobile_number] if data[:mobile_number].to_s != ''
 
       errors.concat validate_public_key data
 

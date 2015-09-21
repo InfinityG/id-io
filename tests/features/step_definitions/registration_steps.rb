@@ -42,7 +42,8 @@ When(/^I send a registration request to the API$/) do
       :username => @username,
       :password => @password,
       :public_key => @encoded_public_key,
-      :email => @email
+      :email => @email,
+      :mobile_number => '+2711223445'
   }.to_json
 
   puts "Create user payload: #{payload}"
