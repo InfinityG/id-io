@@ -57,7 +57,7 @@ module Sinatra
         end
 
         begin
-          #create new user
+          #update user
           user = UserService.new.update(@current_user, data)
           status 201
           user.to_json
