@@ -22,7 +22,14 @@ module ConfigurationConstants
         :sms_api_auth_token => ENV['SMS_API_AUTH_TOKEN'],
         :confirmation_webhook_uri => 'http://localhost:9002/confirmations',
         :confirm_number_template => 'Congratulations! A new web identity has been created for you. ' +
-            'Reply %{SHORT_HASH} to %{REPLY_NUMBER} to activate your registration.'
+            'Reply %{SHORT_HASH} to %{REPLY_NUMBER} to activate your registration.',
+        :ripple_rest_uri => '',
+        :ripple_default_currency => 'IDO',
+        :ripple_max_transaction_fee => '100000',    # in Ripple 'drops'
+        :ripple_hot_wallet_secret => ENV['RIPPLE_HOT_SECRET'],
+        :ripple_hot_wallet_address => ENV['RIPPLE_HOT_ADDRESS'],
+        :ripple_cold_wallet_address => ENV['RIPPLE_COLD_ADDRESS'],
+        :ripple_identity_wallet_address => ENV['RIPPLE_ID_WALLET_ADDRESS']
     }
 
     TEST = {
@@ -45,7 +52,14 @@ module ConfigurationConstants
         :sms_api_auth_token => '',
         :confirmation_webhook_uri => '',
         :confirm_number_template => 'Congratulations! A new web identity has been created for you. ' +
-            'Reply %{SHORT_HASH} to %{REPLY_NUMBER} to activate your registration.'
+            'Reply %{SHORT_HASH} to %{REPLY_NUMBER} to activate your registration.',
+        :ripple_rest_uri => '',
+        :ripple_default_currency => 'IDO',
+        :ripple_max_transaction_fee => '100000',    # in Ripple 'drops'
+        :ripple_hot_wallet_secret => ENV['RIPPLE_HOT_SECRET'],
+        :ripple_hot_wallet_address => ENV['RIPPLE_HOT_ADDRESS'],
+        :ripple_cold_wallet_address => ENV['RIPPLE_COLD_ADDRESS'],
+        :ripple_identity_wallet_address => ENV['RIPPLE_ID_WALLET_ADDRESS']
     }
 
     PRODUCTION = {
@@ -68,7 +82,14 @@ module ConfigurationConstants
         :sms_api_auth_token => '',
         :confirmation_webhook_uri => '',
         :confirm_number_template => 'Congratulations! A new web identity has been created for you. ' +
-            'Reply %{SHORT_HASH} to %{REPLY_NUMBER} to activate your registration.'
+            'Reply %{SHORT_HASH} to %{REPLY_NUMBER} to activate your registration.',
+        :ripple_rest_uri => '',
+        :ripple_default_currency => 'IDO',
+        :ripple_max_transaction_fee => '100000',    # in Ripple 'drops'
+        :ripple_hot_wallet_secret => ENV['RIPPLE_HOT_SECRET'],
+        :ripple_hot_wallet_address => ENV['RIPPLE_HOT_ADDRESS'],
+        :ripple_cold_wallet_address => ENV['RIPPLE_COLD_ADDRESS'],
+        :ripple_identity_wallet_address => ENV['RIPPLE_ID_WALLET_ADDRESS']
     }
   end
 end

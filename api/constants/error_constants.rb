@@ -21,6 +21,7 @@ module ErrorConstants
     CONNECTION_UNAUTHORISED = 'Connection unauthorised'
     DISCONNECTION_UNAUTHORISED = 'Connection disconnection unauthorised'
     REJECTION_UNAUTHORISED = 'Connection rejection unauthorised'
+    TRANSACTION_ERROR = 'An error occurred when attempting a transaction'
   end
 
   module ValidationErrors
