@@ -4,6 +4,7 @@ require './api/errors/validation_error'
 require './api/errors/identity_error'
 require './api/validators/identity_validator'
 require 'json'
+require 'rack/utils'
 
 module Sinatra
   module IdentityRoutes
@@ -20,9 +21,12 @@ module Sinatra
       app.post '/challenge' do
         data = JSON.parse(request.body.read, :symbolize_names => true)
 
+        user_service = UserService.new
+
         begin
           username = data[:username]
-          result = ChallengeService.new.create username
+          user = user_service.get_by_username(username)
+          result = ChallengeService.new.create user
           result.to_json
         rescue IdentityError => e
           status 500
@@ -37,7 +41,7 @@ module Sinatra
       #   "username":"johndoe@test.com",
       #   "password":"password",  # absence of this requires the signed_challenge field
       #   "challenge":{
-      #           "data":"asaf98yqiwehdqsdlnqpodo",
+      #           "digest":"asaf98yqiwehdqsdlnqpodo",
       #           "signature":"ksndaihqiuwehfiuahsdfaisf"
       #         }
       #   "domain":"api.smartcontracts.com"   # relying party
@@ -48,10 +52,10 @@ module Sinatra
         data = JSON.parse(request.body.read, :symbolize_names => true)
 
         begin
-            IdentityValidator.new.validate_login data
+          IdentityValidator.new.validate_login data
         rescue ValidationError => e
-           status 400 # bad request
-            return e.message
+          status 400 # bad request
+          return e.message
         end
 
         # passed basic input validation, now validate actual data
@@ -60,11 +64,17 @@ module Sinatra
         user = nil
 
         begin
-          user = user_service.get_by_username(data[:username])
+          fingerprint = data[:fingerprint]
+          redirect = data[:redirect]
+          domain = data[:domain]
+          username = data[:username]
+
+          user = user_service.get_by_username(username)
           identity_service.validate_login_data user, data
-          trust = identity_service.validate_domain data
-          result = identity_service.generate_auth user, trust
-          result.to_json
+          trust = identity_service.validate_domain domain
+          auth = identity_service.generate_auth user, fingerprint, trust, redirect
+
+          auth.to_json
         rescue IdentityError => e
           status 401
           e.message.to_json

@@ -9,6 +9,15 @@ Feature: Logging in with a challenge
     When I log in with a challenge
     Then the login endpoint should respond with an encrypted auth response
 
+  Scenario: Login with a challenge and redirect
+    Given I am a registered user
+    And I want to login to a trusted domain
+    And I have requested a challenge
+    And I have signed the challenge data
+    And I want to redirect to a 3rd party on login
+    When I log in with a challenge
+    Then the login endpoint should respond with a redirection uri
+
   Scenario: Login with a challenge with missing username
     Given I am a registered user
     And I want to login to a trusted domain

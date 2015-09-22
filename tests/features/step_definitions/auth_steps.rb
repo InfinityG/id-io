@@ -1,11 +1,12 @@
 require 'json'
 require 'securerandom'
-require 'base64'
+require 'digest'
 require 'minitest'
 require 'ig-crypto-utils'
 
 require_relative '../../../api/utils/rest_util'
 require_relative '../../../tests/config'
+require_relative '../../../tests/helpers/random_strings'
 
 Before do
   @random_uuid = SecureRandom.uuid.to_s
@@ -13,15 +14,16 @@ end
 
 Given(/^I am a registered user$/) do
   @first_name = 'Johnny'
+  @last_name = RandomStrings.generate_alpha 15
 
-  @username = 'johnny_' + @random_uuid + '@test.com'
-  @password = 'passwOrd1!'
+  @username = 'johnny_' + @last_name + '@test.com'
+  @password = 'passWOrd1!'
   @encoded_public_key = 'Ag7PunGy2BmnAi+PGE4/Dm9nCg1URv8wLZwSOggyfmAn' # already base64 encoded
   @encoded_secret_key = 'gCrHtl8VVWs6EuJLy7vPqVdBZWzRAR9ZCjIRRpoWvME=' # already base64 encoded
 
   payload = {
       :first_name => @first_name,
-      :last_name => @random_uuid,
+      :last_name => @last_name,
       :username => @username,
       :password => @password,
       :public_key => @encoded_public_key
@@ -41,7 +43,8 @@ And(/^I want to login to a trusted domain$/) do
 
   payload = {
       :domain => @trusted_domain,
-      :aes_key => @encoded_domain_aes_key
+      :aes_key => @encoded_domain_aes_key,
+      :login_uri => "https://#{@trusted_domain}/login"
   }.to_json
 
   puts "Create trusted domain payload: #{payload}"
@@ -71,14 +74,14 @@ And(/^I have invalid challenge data$/) do
 end
 
 And(/^I have signed the challenge data$/) do
-  encoded_data = Base64.encode64 @challenge_result[:data]
-  signed_data = CryptoUtils::EcdsaUtil.new.sign encoded_data, @encoded_secret_key
+  digest = Digest::SHA2.base64digest @challenge_result[:data]
+  signature = CryptoUtils::EcdsaUtil.new.sign digest, @encoded_secret_key
 
   payload = {
       :username => @username,
       :challenge => {
-          :data => encoded_data,
-          :signature => signed_data
+          :digest => digest,
+          :signature => signature
       },
       :domain => @trusted_domain
   }.to_json
@@ -87,13 +90,19 @@ And(/^I have signed the challenge data$/) do
 
 end
 
+And(/^I want to redirect to a 3rd party on login$/) do
+  current_challenge = JSON.parse(@signed_challenge, :symbolize_names => true)
+  current_challenge[:redirect] = true
+  @signed_challenge = current_challenge.to_json
+end
+
 And(/^I have a missing challenge signature$/) do
-  encoded_data = Base64.encode64 @challenge_result[:data]
+  digest = Digest::SHA2.base64digest @challenge_result[:data]
 
   payload = {
       :username => @username,
       :challenge => {
-          :data => encoded_data,
+          :digest => digest,
           :signature => nil
       },
       :domain => @trusted_domain
@@ -103,12 +112,12 @@ And(/^I have a missing challenge signature$/) do
 end
 
 And(/^I have an invalid challenge signature$/) do
-  encoded_data = Base64.encode64 @challenge_result[:data]
+  digest = Digest::SHA2.base64digest @challenge_result[:data]
 
   payload = {
       :username => @username,
       :challenge => {
-          :data => encoded_data,
+          :digest => digest,
           :signature => 'ijfqipwunprcqnrc9pqyewborciquybroiqu'
       },
       :domain => @trusted_domain
@@ -118,14 +127,14 @@ And(/^I have an invalid challenge signature$/) do
 end
 
 And(/^I have a missing username$/) do
-  encoded_data = Base64.encode64 @challenge_result[:data]
-  signed_data = CryptoUtils::EcdsaUtil.new.sign encoded_data, @encoded_secret_key
+  digest = Digest::SHA2.base64digest @challenge_result[:data]
+  signature = CryptoUtils::EcdsaUtil.new.sign digest, @encoded_secret_key
 
   payload = {
       :username => nil,
       :challenge => {
-          :data => encoded_data,
-          :signature => signed_data
+          :digest => digest,
+          :signature => signature
       },
       :domain => @trusted_domain
   }.to_json
@@ -134,14 +143,14 @@ And(/^I have a missing username$/) do
 end
 
 And(/^I have an invalid challenge username$/) do
-  encoded_data = Base64.encode64 @challenge_result[:data]
-  signed_data = CryptoUtils::EcdsaUtil.new.sign encoded_data, @encoded_secret_key
+  digest = Digest::SHA2.base64digest @challenge_result[:data]
+  signature = CryptoUtils::EcdsaUtil.new.sign digest, @encoded_secret_key
 
   payload = {
       :username => 'fafhasdfoaisdhfids',
       :challenge => {
-          :data => encoded_data,
-          :signature => signed_data
+          :digest => digest,
+          :signature => signature
       },
       :domain => @trusted_domain
   }.to_json
@@ -180,11 +189,12 @@ end
 Then(/^the login endpoint should respond with an encrypted auth response$/) do
   assert @login_result[:auth] != nil
   assert @login_result[:iv] != nil
-end
+  end
 
+Then(/^the login endpoint should respond with a redirection uri$/) do
+  assert @login_result[:redirect_uri] != nil
+end
 
 Then(/^the login endpoint should respond with a (\d+) response code$/) do |arg|
   assert @login_response_code.to_s == arg.to_s
 end
-
-

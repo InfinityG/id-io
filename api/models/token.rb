@@ -7,6 +7,7 @@ module SmartIdentity
       key :uuid, String,  :key => true
       key :expires, Integer
       key :ip_address, String
+      key :fingerprint, String
     end
   end
 end

@@ -1,5 +1,7 @@
 require 'ig-crypto-utils'
 
+# asymmetric encryption functions
+
 class SignatureService
 
   def initialize(ecdsa_util = CryptoUtils::EcdsaUtil)

@@ -18,7 +18,7 @@ class UserRepository
 
   def get_by_username(username)
     User.first(:username => username)
-    end
+  end
 
   def get_by_username_and_mobile(username, mobile_number)
     User.first(:username => username, :mobile_number => mobile_number)
@@ -29,21 +29,26 @@ class UserRepository
   end
 
 
-  def save_user(first_name, last_name, username, password_salt, password_hash, public_key, role, mobile_number = nil,
-                webhooks = nil, registrar = nil)
+  def save_user(first_name, last_name, username, password_salt, password_hash, public_key = '', email = '',
+                role = '', mobile_number = '', webhooks = '', registrar = '')
 
     webhook_arr = create_webhook_array webhooks
 
-    User.create(first_name:first_name,
-                    last_name: last_name,
-                    username: username,
-                    password_salt: password_salt,
-                    password_hash: password_hash,
-                    public_key: public_key,
-                    role: role,
-                    mobile_number: mobile_number,
-                    webhooks: webhook_arr,
-                    registrar: registrar)
+    User.create(first_name: first_name,
+                last_name: last_name,
+                username: username,
+                password_salt: password_salt,
+                password_hash: password_hash,
+                public_key: public_key,
+                email: email,
+                role: role,
+                mobile_number: mobile_number,
+                webhooks: webhook_arr,
+                registrar: registrar)
+  end
+
+  def update_user(user)
+    user.save
   end
 
   def delete_user(user_id)
@@ -55,7 +60,10 @@ class UserRepository
 
     if webhooks != nil && webhooks.count > 0
       webhooks.each do |webhook|
-        webhook_arr << Webhook.new(:uri => webhook[:uri], :headers => webhook[:headers], :body => webhook[:body])
+        webhook_arr << Webhook.new(:type => webhook[:type],
+                                   :uri => webhook[:uri],
+                                   :headers => webhook[:headers],
+                                   :body => webhook[:body])
       end
     end
     webhook_arr

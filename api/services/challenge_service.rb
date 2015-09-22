@@ -8,36 +8,29 @@ require './api/services/config_service'
 class ChallengeService
   include ErrorConstants::IdentityErrors
 
-  def initialize(challenge_repository = ChallengeRepository, user_service = UserService, hash_service = HashService,
-  config_service = ConfigurationService)
+  def initialize(challenge_repository = ChallengeRepository, hash_service = HashService,
+                 config_service = ConfigurationService)
     @challenge_repository = challenge_repository.new
-    @user_service = user_service.new
     @hash_service = hash_service.new
     @configuration_service = config_service.new
   end
 
-  def create(username)
-      # ensure user exists
-      user = @user_service.get_by_username username
-      raise IdentityError, USER_NOT_FOUND if user == nil
+  def create(user)
+    raise IdentityError, USER_NOT_FOUND if user == nil
 
-      unless user.block_confirmed
-        raise IdentityError, USER_REGISTRATION_NOT_VALIDATED if user == nil
-      end
+    # delete any previous challenge for this user
+    @challenge_repository.delete_for_user user.username
 
-      # delete any previous challenge for this user
-      @challenge_repository.delete_for_user username
+    # uuid
+    uuid = @hash_service.generate_uuid
 
-      # uuid
-      uuid = @hash_service.generate_uuid
+    # expiry
+    timestamp = Time.now
+    expires = (timestamp + (@configuration_service.get_config[:token_expiry])).to_i
 
-      # expiry
-      timestamp = Time.now
-      expires = (timestamp + (@configuration_service.get_config[:token_expiry])).to_i
+    result = @challenge_repository.create_challenge user.username, uuid, expires
 
-      result = @challenge_repository.create_challenge username, uuid, expires
-
-      {:data => result.data}
+    {:data => result.data}
   end
 
   def get_unexpired_by_username(username)

@@ -8,6 +8,10 @@ module Sinatra
   module UserRoutes
     def self.registered(app)
 
+      ########################
+      # CREATE a new user
+      ########################
+
       app.post '/users' do
         content_type :json
 
@@ -24,7 +28,39 @@ module Sinatra
           #create new user
           user = UserService.new.create(data)
           status 201
-          {:id => user.id}.to_json
+          user.to_json
+        rescue IdentityError => e
+          status 500
+          return e.message.to_json
+        end
+
+      end
+
+      ########################
+      # UPDATE a user (partial update so POST)
+      ########################
+
+      app.post '/users/:username' do
+        content_type :json
+
+        #  ensure that the current logged in user is attempting to update his own data
+        username = params[:username]
+        halt 401, 'Unauthorized' if username != @current_user.username
+
+        data = JSON.parse(request.body.read, :symbolize_names => true)
+
+        begin
+          IdentityValidator.new.validate_user_update data
+        rescue ValidationError => e
+          status 400 # bad request
+          return e.message
+        end
+
+        begin
+          #update user
+          user = UserService.new.update(@current_user, data)
+          status 201
+          user.to_json
         rescue IdentityError => e
           status 500
           return e.message.to_json
@@ -76,7 +112,7 @@ module Sinatra
       app.get '/users/:user_id' do
         content_type :json
 
-        user_id = params[:user_id]
+        user_id = params[:origin_user_id]
         user_service = UserService.new
         user = user_service.get_by_id user_id
         user.to_json
@@ -86,7 +122,7 @@ module Sinatra
       app.get '/users/associations' do
         content_type :json
 
-        user_id = @current_user_id
+        user_id = @current_user.id
         current_user = UserService.new.get_by_id user_id
 
         halt 401, 'Unauthorized' if current_user == nil

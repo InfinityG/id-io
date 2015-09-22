@@ -10,9 +10,9 @@ class TokenService
     @configuration_service = config_service.new
   end
 
-  def create_token(user_id)
+  def create_token(user_id, fingerprint)
     uuid = @hash_service.generate_uuid
-    save_token user_id, uuid
+    save_token user_id, uuid, fingerprint
   end
 
   def get_token(uuid)
@@ -21,7 +21,7 @@ class TokenService
     #check that the token hasn't expired, if it has, delete it
     if token != nil
       if token.expires <= Time.now.to_i
-        @token_repository.delete_token uuid
+        @token_repository.delete_token token.id
         return nil
       end
       return token
@@ -31,10 +31,10 @@ class TokenService
   end
 
   private
-  def save_token(user_id, token)
+  def save_token(user_id, token, fingerprint)
     timestamp = Time.now
     expires = timestamp + (@configuration_service.get_config[:token_expiry])
 
-    @token_repository.save_token(user_id, token, expires.to_i)
+    @token_repository.save_token(user_id, token, fingerprint, expires.to_i)
   end
 end

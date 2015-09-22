@@ -8,9 +8,9 @@ class TrustRepository
   include BSON
   include SmartIdentity::Models
 
-  def create_or_update_trust(domain, aes_key)
+  def create_or_update_trust(domain, aes_key, login_uri)
     Trust.destroy_all(:domain => domain) if (get_trust(domain) != nil)
-    Trust.create(domain: domain, aes_key: aes_key)
+    Trust.create(domain: domain, aes_key: aes_key, :login_uri => login_uri)
   end
 
   def get_trust(domain)

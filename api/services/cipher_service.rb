@@ -3,6 +3,8 @@ require './api/repositories/challenge_repository'
 require './api/utils/hash_generator'
 require 'ig-crypto-utils'
 
+# symmetric encryption functions
+
 class CipherService
 
   def initialize(aes_util = CryptoUtils::AesUtil)

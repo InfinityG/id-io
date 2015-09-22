@@ -59,7 +59,7 @@ class IdentityService
     raise IdentityError, PUBLIC_KEY_NOT_REGISTERED if user.public_key.to_s == ''
 
     # validate the challenge
-    validate_challenge user, challenge[:data], challenge[:signature]
+    validate_challenge user, challenge[:digest], challenge[:signature]
 
     user
   end
@@ -72,32 +72,35 @@ class IdentityService
     raise IdentityError, INVALID_PASSWORD if result != password_hash
   end
 
-  def validate_domain(data)
-    domain = data[:domain]
-
+  def validate_domain(domain)
     trust = @trust_service.get_by_domain(domain)
     raise IdentityError, DOMAIN_NOT_AUTHORIZED if trust == nil
 
     trust
   end
 
-  def validate_challenge(user, challenge_data, challenge_signature)
+  def validate_challenge(user, digest, signature)
     raise IdentityError, USER_NOT_FOUND if user == nil
-
-    # NOTE: incoming challenge data will be base64 encoded as this is the requirement for signing -
-    # we therefore need to base64 decode it to compare with the stored version!
-    decoded_challenge_data = Base64.decode64 challenge_data
 
     # check that the challenge has been issued (check db)
     challenge = @challenge_service.get_unexpired_by_username user.username
 
-    if (challenge == nil) || (challenge.data != decoded_challenge_data)
-      raise IdentityError, INVALID_CHALLENGE_DATA
+    if challenge == nil
+      raise IdentityError, INVALID_SIGNED_DATA
+    else
+      # compare the base64 encoded sha256 hashes
+      challenge_hash = @hash_service.generate_base64_sha256_hash challenge.data
+      raise IdentityError, INVALID_SIGNED_DATA if digest != challenge_hash
     end
 
     # now validate the challenge signature itself
+    validate_signature digest, signature, user.public_key
+
+  end
+
+  def validate_signature(digest, signature, public_key)
     begin
-      unless @signature_service.validate_signature challenge_data, challenge_signature, user.public_key
+      unless @signature_service.validate_signature digest, signature, public_key
         raise IdentityError, INVALID_SIGNATURE
       end
     rescue OpenSSL::PKey::ECError
@@ -110,24 +113,29 @@ class IdentityService
     @challenge_service.delete(user.username) if user != nil
   end
 
-  def generate_auth(user, trust)
+  def generate_auth(user, fingerprint, trust, redirect)
 
     # get the api secret
     api_secret = @configuration_service.get_config[:api_secret_ecdsa_key]
 
     # create a token
-    token = @token_service.create_token user.id
-    encoded_token_uuid = Base64.encode64 token.uuid
+    token = @token_service.create_token user.id, fingerprint
+    token_uuid_digest = @hash_service.generate_base64_sha256_hash token.uuid
 
-    # sign the token with the api secret key
-    signed_token = @signature_service.sign encoded_token_uuid, api_secret
+    # sign the token uuid digest with the api secret key
+    signature = @signature_service.sign token_uuid_digest, api_secret
 
     # create plaintext data to encrypt
     plaintext_data = {
         :id => user.id,
         :username => user.username,
-        :token => encoded_token_uuid,
-        :signature => signed_token,
+        :first_name => user.first_name,
+        :last_name => user.last_name,
+        :email => user.email,
+        :mobile_number => user.mobile_number,
+        :digest => token_uuid_digest,
+        :signature => signature,
+        :fingerprint => token.fingerprint,
         :role => user.role,
         :expiry_date => token.expires,
         :ip_address => '0.0.0.0'
@@ -136,8 +144,16 @@ class IdentityService
     encoded_plaintext_data = Base64.encode64 plaintext_data
 
     result = @cipher_service.aes_encrypt encoded_plaintext_data, trust.aes_key
-    {:token => token.uuid, :auth => result[:cipher_text], :iv => result[:iv]}
+    auth = {:token => token.uuid, :auth => result[:cipher_text], :iv => result[:iv]}
 
+    # if redirect == true, redirect to the domain login uri, with the escaped JSON auth on the querystring
+    if (redirect != nil) && (redirect)
+      base64_escaped_auth = URI.escape(Base64.encode64(auth.to_json))
+      redirect_uri = "#{trust.login_uri}/#{user.username}/#{base64_escaped_auth}"
+      return {:redirect_uri => redirect_uri}
+    end
+
+    auth
   end
 
 end

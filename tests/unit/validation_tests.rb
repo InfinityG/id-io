@@ -15,4 +15,5 @@ class ValidationTests < MiniTest::Test
 
     assert result
   end
+
 end

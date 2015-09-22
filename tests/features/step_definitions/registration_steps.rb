@@ -1,27 +1,23 @@
 require 'json'
-require 'securerandom'
-require 'base64'
 require 'minitest'
-require_relative '../../../tests/config'
 
-Before do
-  @random_uuid = SecureRandom.uuid.to_s
-end
+require_relative '../../../tests/config'
+require_relative '../../../tests/helpers/random_strings'
 
 Given(/^a first name$/) do
   @first_name = 'Johnny'
 end
 
 And(/^a last name$/) do
-  @last_name = @random_uuid
+  @last_name = RandomStrings.generate_alpha 15
 end
 
 And(/^a username$/) do
-  @username = 'johnny_' + @random_uuid + '@test.com'
+  @username =  "#{@first_name}_#{@last_name}"
 end
 
 And(/^a password$/) do
-  @password = 'passwOrd1!'
+  @password = 'passWOrd1!'
 end
 
 And(/^an invalid password$/) do
@@ -32,6 +28,11 @@ And(/^a public ECDSA key$/) do
   @encoded_public_key = 'Ag7PunGy2BmnAi+PGE4/Dm9nCg1URv8wLZwSOggyfmAn' # already base64 encoded
 end
 
+And(/^an email address$/) do
+  @email = "#{@first_name}_#{@last_name}@test.com"
+end
+
+
 When(/^I send a registration request to the API$/) do
   @auth_header = IDENTITY_API_AUTH_KEY
 
@@ -40,7 +41,9 @@ When(/^I send a registration request to the API$/) do
       :last_name => @last_name,
       :username => @username,
       :password => @password,
-      :public_key => @encoded_public_key
+      :public_key => @encoded_public_key,
+      :email => @email,
+      :mobile_number => '+2711223445'
   }.to_json
 
   puts "Create user payload: #{payload}"
@@ -66,3 +69,17 @@ And(/^an error message of "([^"]*)"$/) do |arg|
   assert errors[0] == arg
 end
 
+
+# update steps
+
+And(/^a new password$/) do
+  pending
+end
+
+And(/^a new public ECDSA key$/) do
+  pending
+end
+
+When(/^I send an update request to the API$/) do
+  pending
+end

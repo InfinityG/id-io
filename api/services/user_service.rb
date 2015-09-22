@@ -3,7 +3,8 @@ require './api/models/webhook'
 require './api/repositories/user_repository'
 require './api/services/hash_service'
 require './api/services/config_service'
-require './api/services/transaction_service'
+require './api/services/challenge_service'
+require './api/services/identity_service'
 require './api/utils/rest_util'
 require './api/constants/error_constants'
 require './api/errors/identity_error'
@@ -13,21 +14,23 @@ class UserService
   include ErrorConstants::IdentityErrors
 
   def initialize(user_repository = UserRepository, hash_service = HashService,
-                 config_service = ConfigurationService, transaction_service = TransactionService,
-                 rest_util = RestUtil)
+                 config_service = ConfigurationService, challenge_service = ChallengeService,
+                 identity_service = IdentityService, rest_util = RestUtil)
     @user_repository = user_repository.new
     @hash_service = hash_service.new
     @config_service = config_service.new
-    @transaction_service = transaction_service.new
+    @challenge_service = challenge_service.new
+    @identity_service = identity_service.new
     @rest_util = rest_util.new
   end
 
+  # register a new user
   def create(data)
-
     first_name = data[:first_name]
     last_name = data[:last_name]
     username = data[:username]
     password = data[:password]
+    email = data[:email]
     public_key = data[:public_key]
     role = data[:role]
     mobile_number = data[:mobile_number]
@@ -38,34 +41,21 @@ class UserService
     # check user doesn't already exist
     raise IdentityError, USERNAME_EXISTS if get_by_username(username) != nil
 
-    # create user
-    begin
-      salt = @hash_service.generate_salt
-      hashed_password = @hash_service.generate_password_hash password, salt
+    # create salt and hash
+    salt = @hash_service.generate_salt
+    hashed_password = @hash_service.generate_password_hash password, salt
 
-      user = @user_repository.save_user first_name, last_name, username, salt, hashed_password,
-                                        public_key, role, mobile_number, webhooks, registrar
-    rescue Exception => e
-      raise IdentityError, e.message
-    end
-
-    # create a new transaction on the blockchain with embedded details
-    begin
-      memo_hash = public_key != '' ?
-          {:u_id => username, :u_ec_pub => public_key, :op_code => 'U_CREATE'} :
-          {:u_id => username, :op_code => 'U_CREATE'}
-
-      @transaction_service.execute_deposit(user, 1.0, memo_hash)
-    rescue IdentityError
-      # roll back user creation
-      @user_repository.delete_user user.id
-      raise
-    end
+    # save user
+    user = @user_repository.save_user first_name, last_name, username, salt, hashed_password,
+                                      public_key, email, role, mobile_number, webhooks, registrar
 
     # send confirmation sms if this is required
     send_confirmation_sms(username, mobile_number) if confirm_mobile
 
-    user
+    # create a challenge on the response so that subsequent login doesn't require an additional challenge step
+    challenge_data = @challenge_service.create user
+
+    {:id => user.id, :username => user.username, :challenge => challenge_data}
   end
 
   #TODO: refactor this to handle paging
@@ -89,18 +79,52 @@ class UserService
     @user_repository.get_associated_users_by_username username
   end
 
-  def update(user)
-    #TODO: update the DB - username is the identifier (stored in both DB and blockchain) and cannot be changed
-    #raise 'User update not implemented'
+  def update(current_user, data)
+    # first validate the signature
+    digest = data[:digest]
+    signature = data[:signature]
 
-    user.save
+    # before we do anything we need to confirm the signature
+    @identity_service.validate_signature digest, signature, current_user.public_key
+
+    # the new values for password and public key
+    password = data[:password].to_s
+    public_key = data[:public_key].to_s
+
+    if password != ''
+      # create salt and hash
+      salt = @hash_service.generate_salt
+      hashed_password = @hash_service.generate_password_hash password, salt
+      current_user.password_salt = salt
+      current_user.password_hash = hashed_password
+    end
+
+    if public_key != ''
+      current_user.public_key = public_key
+    end
+
+    # now save
+    @user_repository.update_user current_user
+
+    {:id => current_user.id, :username => current_user.username, :public_key => current_user.public_key}
   end
 
-  def update_block_info(user_id, confirmed_status, block_hash)
-    user = @user_repository.get_user user_id
-    user.block_confirmed = confirmed_status
-    user.block_create_hash = block_hash
-    user.save
+  def confirm_mobile(username, mobile_number)
+    user = get_by_username(username)
+    raise IdentityError, USER_NOT_FOUND if user == nil
+    raise IdentityError, INVALID_MOBILE_FOR_USER if user.mobile_number != mobile_number
+
+    user.mobile_confirmed = true
+    @user_repository.update_user user
+    end
+
+  def confirm_email(username, email)
+    user = get_by_username(username)
+    raise IdentityError, USER_NOT_FOUND if user == nil
+    raise IdentityError, INVALID_EMAIL_FOR_USER if user.email != email
+
+    user.email_confirmed = true
+    @user_repository.update_user user
   end
 
   def delete(username)
