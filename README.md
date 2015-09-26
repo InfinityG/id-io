@@ -410,7 +410,7 @@ Configuration for the API is set in the *__/api/constants/configuration_constant
 
 ```
 TEST: > sudo docker run -e API_AUTH_TOKEN=********* -e API_SECRET_KEY=********* -e API_PUBLIC_KEY=********* -e MONGO_DB=id-io -e MONGO_REPLICATED=false -e MONGO_HOST_1=localhost:27017 -e SMS_API_AUTH_TOKEN=********* -p 9002:9902 -it --rm infinityg/id-io:v1
-PRODUCTION: > sudo docker run -e API_AUTH_TOKEN=********* -e API_SECRET_KEY=********* -e API_PUBLIC_KEY=********* -e MONGO_DB=id-io -e MONGO_REPLICATED=true -e MONGO_HOST_1=10.0.1.10:27017 -e MONGO_HOST_2=10.0.1.11:27017 -e MONGO_HOST_3=10.0.1.12:27017 -e SMS_API_AUTH_TOKEN=blah -p 9002:9002 -it --rm infinityg/id-io:v1
+PRODUCTION: > sudo docker run -e API_AUTH_TOKEN=********* -e API_SECRET_KEY=********* -e API_PUBLIC_KEY=********* -e MONGO_DB=id-io -e MONGO_REPLICATED=true -e MONGO_HOST_1=10.0.1.10:27017 -e MONGO_HOST_2=10.0.1.11:27017 -e MONGO_HOST_3=10.0.1.12:27017 -e SMS_API_AUTH_TOKEN=********* -p 9002:9002 -it --rm infinityg/id-io:v1
 ```
 
 ### Why blockchain?
