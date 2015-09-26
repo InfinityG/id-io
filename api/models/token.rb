@@ -8,6 +8,8 @@ module SmartIdentity
       key :expires, Integer
       key :ip_address, String
       key :fingerprint, String
+
+      timestamps!
     end
   end
 end

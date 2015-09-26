@@ -41,5 +41,7 @@ module ErrorConstants
     INVALID_USER_ID = 'Invalid user id'
     INVALID_CONNECTION_USER_ID = 'Invalid contact user id'
     INVALID_CONFIRMATION = 'Invalid confirmation'
+    INVALID_OTP_REQUEST = 'Invalid OTP request'
+    INVALID_PASSWORD_RESET_REQUEST = 'Invalid password reset request'
   end
 end

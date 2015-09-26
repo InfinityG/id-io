@@ -20,6 +20,8 @@ module SmartIdentity
       # many :connections, :class_name => 'SmartIdentity::Models::Connection'
 
       many :webhooks, :class_name => 'SmartIdentity::Models::Webhook'
+
+      timestamps!
     end
   end
 end

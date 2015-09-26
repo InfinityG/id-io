@@ -191,4 +191,33 @@ class IdentityValidator
     errors
   end
 
+  def validate_otp_request(data)
+    errors = []
+
+    #fields
+    if data == nil
+      errors.push INVALID_OTP_REQUEST
+    else
+      errors.push INVALID_USERNAME unless GeneralValidator.validate_username_strict data[:username]
+    end
+
+    errors
+  end
+
+  def validate_reset_request(data)
+    errors = []
+
+    #fields
+    if data == nil
+      errors.push INVALID_PASSWORD_RESET_REQUEST
+    else
+      errors.push INVALID_USERNAME unless GeneralValidator.validate_username_strict data[:username]
+      errors.push INVALID_USERNAME unless GeneralValidator.validate_string data[:nonce]
+      errors.push INVALID_USERNAME unless GeneralValidator.validate_integer data[:otp]
+      errors.push INVALID_USERNAME unless GeneralValidator.validate_password data[:password]
+    end
+
+    errors
+  end
+
 end

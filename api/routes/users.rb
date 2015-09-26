@@ -68,6 +68,34 @@ module Sinatra
 
       end
 
+      ################################################
+      # Initiate password reset flow with OTP generation
+      ################################################
+
+      app.post '/users/otp' do
+        content_type :json
+
+        data = JSON.parse(request.body.read, :symbolize_names => true)
+
+        begin
+          IdentityValidator.new.validate_otp_request data
+        rescue ValidationError => e
+          status 400 # bad request
+          return e.message
+        end
+
+        begin
+          #create new user
+          user = UserService.new.create(data)
+          status 201
+          user.to_json
+        rescue IdentityError => e
+          status 500
+          return e.message.to_json
+        end
+
+      end
+
       #get users
       app.get '/users' do
         content_type :json

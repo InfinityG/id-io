@@ -6,6 +6,8 @@ module SmartIdentity
       key :domain, String
       key :aes_key, String
       key :login_uri, String
+
+      timestamps!
     end
   end
 end
