@@ -409,7 +409,8 @@ could allow an attacker to login to the relying party.
 Configuration for the API is set in the *__/api/constants/configuration_constants.rb__* file. Sensitive values are retrieved from relevant environment variables set on the host. When running a container using __Docker__, introduce these environment variables via the command line, eg:
 
 ```
-sudo docker run -e API_AUTH_TOKEN=********* -e API_SECRET_KEY=********** -e API_PUBLIC_KEY=******* -e MONGO_HOST=10.0.0.123 -e MONGO_DB=id-io -e SMS_API_AUTH_TOKEN=********* -p 9002:9002 -it --rm infinityg/id-io:v1
+TEST: > sudo docker run -e API_AUTH_TOKEN=********* -e API_SECRET_KEY=********* -e API_PUBLIC_KEY=********* -e MONGO_DB=id-io -e MONGO_REPLICATED=false -e MONGO_HOST_1=localhost:27017 -e SMS_API_AUTH_TOKEN=********* -p 9002:9902 -it --rm infinityg/id-io:v1
+PRODUCTION: > sudo docker run -e API_AUTH_TOKEN=********* -e API_SECRET_KEY=********* -e API_PUBLIC_KEY=********* -e MONGO_DB=id-io -e MONGO_REPLICATED=true -e MONGO_HOST_1=10.0.1.10:27017 -e MONGO_HOST_2=10.0.1.11:27017 -e MONGO_HOST_3=10.0.1.12:27017 -e SMS_API_AUTH_TOKEN=blah -p 9002:9002 -it --rm infinityg/id-io:v1
 ```
 
 ### Why blockchain?
