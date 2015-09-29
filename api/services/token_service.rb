@@ -1,17 +1,17 @@
-require './api/services/hash_service'
+require './api/utils/random_generator'
 require './api/services/config_service'
 require './api/repositories/token_repository'
 
 class TokenService
+include RandomGenerator
 
-  def initialize(token_repository = TokenRepository, hash_service = HashService, config_service = ConfigurationService)
+  def initialize(token_repository = TokenRepository, config_service = ConfigurationService)
     @token_repository = token_repository.new
-    @hash_service = hash_service.new
     @configuration_service = config_service.new
   end
 
   def create_token(user_id, fingerprint)
-    uuid = @hash_service.generate_uuid
+    uuid = RandomGenerator.generate_uuid
     save_token user_id, uuid, fingerprint
   end
 

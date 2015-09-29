@@ -1,27 +1,19 @@
 require 'securerandom'
 require 'digest'
+require './api/utils/random_generator'
 
-class HashGenerator
+module HashGenerator
 
-  def generate_password_hash(password, salt)
+  def self.generate_password_hash(password, salt)
     salted_password = password + salt
     generate_hash salted_password
   end
 
-  def generate_hash(data)
+  def self.generate_hash(data)
     Digest::SHA2.base64digest data
   end
 
-  def generate_salt
-    generate_uuid
+  def self.generate_salt
+    RandomGenerator.generate_uuid
   end
-
-  def generate_uuid
-    SecureRandom.uuid
-  end
-
-  def generate_random_number
-    SecureRandom.random_number 500
-  end
-
 end

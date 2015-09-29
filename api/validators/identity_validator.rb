@@ -46,7 +46,7 @@ class IdentityValidator
     end
   end
 
-  def validate_user_update(data)
+  def validate_user_update(data, enforce_user_sig)
     errors = []
 
     if data == nil
@@ -62,8 +62,8 @@ class IdentityValidator
       # public key is not required, but if present, must be valid
       errors.concat validate_public_key data
 
-      # signature is required
-      errors.concat validate_signature_fields data
+      # signature required if 'enforce_user_sig' true
+      errors.concat validate_signature_fields data if enforce_user_sig
 
       raise ValidationError, {:valid => false, :errors => errors}.to_json if errors.count > 0
     end
@@ -212,9 +212,9 @@ class IdentityValidator
       errors.push INVALID_PASSWORD_RESET_REQUEST
     else
       errors.push INVALID_USERNAME unless GeneralValidator.validate_username_strict data[:username]
-      errors.push INVALID_USERNAME unless GeneralValidator.validate_string data[:nonce]
-      errors.push INVALID_USERNAME unless GeneralValidator.validate_integer data[:otp]
-      errors.push INVALID_USERNAME unless GeneralValidator.validate_password data[:password]
+      errors.push INVALID_NONCE unless GeneralValidator.validate_uuid data[:nonce]
+      errors.push INVALID_OTP unless GeneralValidator.validate_integer data[:otp]
+      errors.push INVALID_PASSWORD unless GeneralValidator.validate_password data[:password]
     end
 
     errors

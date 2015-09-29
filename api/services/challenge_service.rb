@@ -1,17 +1,16 @@
 require './api/models/challenge'
 require './api/repositories/challenge_repository'
-require './api/utils/hash_generator'
+require './api/utils/random_generator'
 require './api/errors/identity_error'
 require './api/constants/error_constants'
 require './api/services/config_service'
 
 class ChallengeService
   include ErrorConstants::IdentityErrors
+  include RandomGenerator
 
-  def initialize(challenge_repository = ChallengeRepository, hash_service = HashService,
-                 config_service = ConfigurationService)
+  def initialize(challenge_repository = ChallengeRepository, config_service = ConfigurationService)
     @challenge_repository = challenge_repository.new
-    @hash_service = hash_service.new
     @configuration_service = config_service.new
   end
 
@@ -22,7 +21,7 @@ class ChallengeService
     @challenge_repository.delete_for_user user.username
 
     # uuid
-    uuid = @hash_service.generate_uuid
+    uuid = RandomGenerator.generate_uuid
 
     # expiry
     timestamp = Time.now

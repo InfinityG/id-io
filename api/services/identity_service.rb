@@ -4,22 +4,22 @@ require './api/services/config_service'
 require './api/services/token_service'
 require './api/services/challenge_service'
 require './api/services/trust_service'
-require './api/services/hash_service'
+require './api/utils/hash_generator'
 require './api/errors/identity_error'
 require 'base64'
 require 'openssl'
 
 class IdentityService
   include ErrorConstants::IdentityErrors
+  include HashGenerator
 
   def initialize(signature_service = SignatureService, config_service = ConfigurationService,
                  token_service = TokenService, challenge_service = ChallengeService,
-                 trust_service = TrustService, hash_service = HashService, cipher_service = CipherService)
+                 trust_service = TrustService, cipher_service = CipherService)
     @signature_service = signature_service.new
     @configuration_service = config_service.new
     @token_service = token_service.new
     @challenge_service = challenge_service.new
-    @hash_service = hash_service.new
     @trust_service = trust_service.new
     @cipher_service = cipher_service.new
   end
@@ -68,7 +68,7 @@ class IdentityService
     password_salt = user[:password_salt]
     password_hash = user[:password_hash]
 
-    result = @hash_service.generate_password_hash password, password_salt
+    result = HashGenerator.generate_password_hash password, password_salt
     raise IdentityError, INVALID_PASSWORD if result != password_hash
   end
 
@@ -89,7 +89,7 @@ class IdentityService
       raise IdentityError, INVALID_SIGNED_DATA
     else
       # compare the base64 encoded sha256 hashes
-      challenge_hash = @hash_service.generate_base64_sha256_hash challenge.data
+      challenge_hash = HashGenerator.generate_hash challenge.data
       raise IdentityError, INVALID_SIGNED_DATA if digest != challenge_hash
     end
 
@@ -120,7 +120,7 @@ class IdentityService
 
     # create a token
     token = @token_service.create_token user.id, fingerprint
-    token_uuid_digest = @hash_service.generate_base64_sha256_hash token.uuid
+    token_uuid_digest = HashGenerator.generate_hash token.uuid
 
     # sign the token uuid digest with the api secret key
     signature = @signature_service.sign token_uuid_digest, api_secret

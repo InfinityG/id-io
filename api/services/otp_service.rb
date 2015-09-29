@@ -1,21 +1,57 @@
-require './api/services/hash_service'
+require './api/utils/random_generator'
 require './api/services/config_service'
 require './api/repositories/otp_repository'
+require './api/repositories/user_repository'
+require './api/gateways/sms_gateway'
+require './api/errors/identity_error'
+require './api/constants/error_constants'
 
 class OtpService
 
-  def initialize(otp_repository = OtpRepository, hash_service = HashService, config_service = ConfigurationService)
+  include ErrorConstants::IdentityErrors
+  include RandomGenerator
+
+  def initialize(otp_repository = OtpRepository, user_repository = UserRepository,
+                 config_service = ConfigurationService, sms_gateway = SmsGateway)
     @otp_repository = otp_repository.new
-    @hash_service = hash_service.new
+    @user_repository = user_repository.new
     @configuration_service = config_service.new
+    @config = config_service.new.get_config
+    @sms_gateway = sms_gateway.new
   end
 
-  def create_otp(username, pin)
-    nonce = @hash_service.generate_uuid
+  def create_otp(username)
+    user = @user_repository.get_by_username username
+
+    raise IdentityError, USER_NOT_FOUND if user == nil
+    raise IdentityError, MOBILE_NUMBER_NOT_REGISTERED if user.mobile_number.to_s == ''
+
+    pin = RandomGenerator.generate_numeric 4
+    nonce = RandomGenerator.generate_uuid
+
+    message = @config[:forgotten_password_sms_template] % {:SHORT_HASH => pin}
+    @sms_gateway.send_sms user.mobile_number, message
+
     save_otp username, pin, nonce
+
+    {:status => 'sent', :nonce => nonce}
   end
 
-  def get_token(nonce)
+  private
+  def confirm_otp(username, pin, nonce)
+    otp = get_otp nonce
+
+    raise IdentityError, OTP_NOT_FOUND if otp == nil
+
+    if otp != nil && otp.pin == pin && otp.username == username
+      @otp_repository.delete_otp otp.id.to_s # immediately kill the otp so that it can't be reused
+      return true
+    end
+
+    false
+  end
+
+  def get_otp(nonce)
     otp = @otp_repository.get_otp_by_nonce(nonce)
 
     #check that the otp hasn't expired, if it has, delete it
@@ -30,11 +66,11 @@ class OtpService
     nil
   end
 
-  private
   def save_otp(username, pin, nonce)
     timestamp = Time.now
-    expires = timestamp + (@configuration_service.get_config[:otp_expiry])
+    expires = timestamp + (@config[:otp_expiry])
 
     @otp_repository.create_otp(username, pin, nonce, expires.to_i)
   end
+
 end

@@ -1,10 +1,10 @@
 require './api/models/user'
 require './api/models/webhook'
 require './api/repositories/user_repository'
-require './api/services/hash_service'
 require './api/services/config_service'
 require './api/services/challenge_service'
 require './api/services/identity_service'
+require './api/utils/hash_generator'
 require './api/utils/rest_util'
 require './api/constants/error_constants'
 require './api/errors/identity_error'
@@ -12,13 +12,13 @@ require 'json'
 
 class UserService
   include ErrorConstants::IdentityErrors
+  include HashGenerator
 
-  def initialize(user_repository = UserRepository, hash_service = HashService,
+  def initialize(user_repository = UserRepository,
                  config_service = ConfigurationService, challenge_service = ChallengeService,
                  identity_service = IdentityService, rest_util = RestUtil)
     @user_repository = user_repository.new
-    @hash_service = hash_service.new
-    @config_service = config_service.new
+    @config = config_service.new.get_config
     @challenge_service = challenge_service.new
     @identity_service = identity_service.new
     @rest_util = rest_util.new
@@ -42,8 +42,8 @@ class UserService
     raise IdentityError, USERNAME_EXISTS if get_by_username(username) != nil
 
     # create salt and hash
-    salt = @hash_service.generate_salt
-    hashed_password = @hash_service.generate_password_hash password, salt
+    salt = HashGenerator.generate_salt
+    hashed_password = HashGenerator.generate_password_hash password, salt
 
     # save user
     user = @user_repository.save_user first_name, last_name, username, salt, hashed_password,
@@ -80,12 +80,14 @@ class UserService
   end
 
   def update(current_user, data)
-    # first validate the signature
-    digest = data[:digest]
-    signature = data[:signature]
+    if @config[:enforce_signature_based_auth]
+      # first validate the signature
+      digest = data[:digest]
+      signature = data[:signature]
 
-    # before we do anything we need to confirm the signature
-    @identity_service.validate_signature digest, signature, current_user.public_key
+      # before we do anything we need to confirm the signature
+      @identity_service.validate_signature digest, signature, current_user.public_key
+    end
 
     # the new values for password and public key
     password = data[:password].to_s
@@ -93,8 +95,8 @@ class UserService
 
     if password != ''
       # create salt and hash
-      salt = @hash_service.generate_salt
-      hashed_password = @hash_service.generate_password_hash password, salt
+      salt = HashGenerator.generate_salt
+      hashed_password = HashGenerator.generate_password_hash password, salt
       current_user.password_salt = salt
       current_user.password_hash = hashed_password
     end
@@ -116,7 +118,7 @@ class UserService
 
     user.mobile_confirmed = true
     @user_repository.update_user user
-    end
+  end
 
   def confirm_email(username, email)
     user = get_by_username(username)
@@ -134,12 +136,10 @@ class UserService
 
   private
   def send_confirmation_sms(username, mobile_number)
-    config = @config_service.get_config
-
     # sms api uri, auth and message
-    sms_api_uri = config[:sms_api_message_uri]
-    sms_api_auth_token = config[:sms_api_auth_token]
-    sms_message = config[:confirm_number_template]
+    sms_api_uri = @config[:sms_api_message_uri]
+    sms_api_auth_token = @config[:sms_api_auth_token]
+    sms_message = @config[:confirm_number_template]
 
     # callback webhook - this is used by the sms api to call back into the identity api
     sms_webhook_body = {
@@ -148,8 +148,8 @@ class UserService
     }.to_json
 
     sms_webhook = {
-        :uri => config[:confirmation_webhook_uri],
-        :auth_header => config[:api_auth_token],
+        :uri => @config[:confirmation_webhook_uri],
+        :auth_header => @config[:api_auth_token],
         :body => sms_webhook_body
     }
 

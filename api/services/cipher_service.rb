@@ -1,6 +1,3 @@
-require './api/models/challenge'
-require './api/repositories/challenge_repository'
-require './api/utils/hash_generator'
 require 'ig-crypto-utils'
 
 # symmetric encryption functions

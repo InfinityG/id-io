@@ -21,11 +21,13 @@ module ConfigurationConstants
         :token_expiry => 3600,
         :otp_expiry => 300,
         :challenge_expiry => 3600,
+        :enforce_user_sig => false,
         :sms_api_message_uri => 'http://localhost:9004/messages/outbound',
         :sms_api_auth_token => ENV['SMS_API_AUTH_TOKEN'],
         :confirmation_webhook_uri => 'http://localhost:9002/confirmations',
         :confirm_number_template => 'Congratulations! A new identity has been created for you. ' +
-            'Reply %{SHORT_HASH} to %{REPLY_NUMBER} to activate your registration.'
+            'Reply %{SHORT_HASH} to %{REPLY_NUMBER} to activate your registration.',
+        :forgotten_password_sms_template => 'You have requested to reset your password. Your one time PIN is %{SHORT_HASH}.'
     }
 
     TEST = {
@@ -47,11 +49,13 @@ module ConfigurationConstants
         :token_expiry => 3600,
         :otp_expiry => 300,
         :challenge_expiry => 3600,
+        :enforce_user_sig => false,
         :sms_api_message_uri => '',
         :sms_api_auth_token => '',
         :confirmation_webhook_uri => '',
         :confirm_number_template => 'Congratulations! A new identity has been created for you. ' +
-            'Reply %{SHORT_HASH} to %{REPLY_NUMBER} to activate your registration.'
+            'Reply %{SHORT_HASH} to %{REPLY_NUMBER} to activate your registration.',
+        :forgotten_password_sms_template => 'You have requested to reset your password. Your one time PIN is %{SHORT_HASH}.'
     }
 
     PRODUCTION = {
@@ -73,11 +77,13 @@ module ConfigurationConstants
         :token_expiry => 3600,
         :otp_expiry => 300,
         :challenge_expiry => 3600,
+        :enforce_user_sig => false,
         :sms_api_message_uri => '',
         :sms_api_auth_token => '',
         :confirmation_webhook_uri => '',
         :confirm_number_template => 'Congratulations! A new identity has been created for you. ' +
-            'Reply %{SHORT_HASH} to %{REPLY_NUMBER} to activate your registration.'
+            'Reply %{SHORT_HASH} to %{REPLY_NUMBER} to activate your registration.',
+        :forgotten_password_sms_template => 'You have requested to reset your password. Your one time PIN is %{SHORT_HASH}.'
     }
   end
 end

@@ -1,6 +1,5 @@
 require './api/models/trust'
 require './api/repositories/trust_repository'
-require './api/services/hash_service'
 require './api/constants/error_constants'
 require './api/errors/identity_error'
 

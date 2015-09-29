@@ -1,5 +1,6 @@
 require 'sinatra/base'
 require './api/services/user_service'
+require './api/services/otp_service'
 require './api/errors/identity_error'
 require './api/errors/validation_error'
 require './api/validators/identity_validator'
@@ -50,7 +51,8 @@ module Sinatra
         data = JSON.parse(request.body.read, :symbolize_names => true)
 
         begin
-          IdentityValidator.new.validate_user_update data
+          enforce_user_sig = ConfigurationService.new.get_config[:enforce_user_sig]
+          IdentityValidator.new.validate_user_update data, enforce_user_sig
         rescue ValidationError => e
           status 400 # bad request
           return e.message
@@ -59,7 +61,7 @@ module Sinatra
         begin
           #update user
           user = UserService.new.update(@current_user, data)
-          status 201
+          status 200
           user.to_json
         rescue IdentityError => e
           status 500
@@ -72,7 +74,7 @@ module Sinatra
       # Initiate password reset flow with OTP generation
       ################################################
 
-      app.post '/users/otp' do
+      app.post '/users/recovery/otp' do
         content_type :json
 
         data = JSON.parse(request.body.read, :symbolize_names => true)
@@ -86,15 +88,43 @@ module Sinatra
 
         begin
           #create new user
-          user = UserService.new.create(data)
+          otp = OtpService.new.create_otp data[:username]
           status 201
-          user.to_json
+          otp.to_json
         rescue IdentityError => e
-          status 500
-          return e.message.to_json
+          status 400
+          e.message.to_json
         end
 
       end
+
+      app.post '/users/recovery/reset' do
+        content_type :json
+
+        data = JSON.parse(request.body.read, :symbolize_names => true)
+
+        begin
+          IdentityValidator.new.validate_reset_request data
+        rescue ValidationError => e
+          status 400 # bad request
+          return e.message
+        end
+
+        begin
+          #create new user
+          user = OtpService.new.create_otp data[:username]
+          status 201
+          user.to_json
+        rescue IdentityError => e
+          status 400
+          e.message.to_json
+        end
+
+      end
+
+      #############################
+      # User details
+      #############################
 
       #get users
       app.get '/users' do
