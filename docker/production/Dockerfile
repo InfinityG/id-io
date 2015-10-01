@@ -2,8 +2,6 @@ FROM ubuntu:14.04
 MAINTAINER Infinity-G <developer@infinity-g.com>
 
 #### General ####
-
-#### General ####
 RUN apt-get update && apt-get install -y curl wget git git-core curl zlib1g-dev build-essential
 RUN apt-get install -y libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3
 RUN apt-get install -y libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties
