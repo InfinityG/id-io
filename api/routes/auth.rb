@@ -21,8 +21,8 @@ module Sinatra
 
         if (method == 'OPTIONS') ||
             (method == 'POST' && path == '/users') ||
-            (method == 'POST' && path == '/users/recovery/otp') ||
-            (method == 'POST' && path == '/users/recovery/reset') ||
+            (method == 'POST' && path == '/users/otp') ||
+            (method == 'POST' && path == '/users/reset') ||
             (method == 'POST' && path == '/challenge') ||
             (method == 'POST' && path == '/login')
           return

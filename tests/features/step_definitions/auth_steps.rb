@@ -20,13 +20,17 @@ Given(/^I am a registered user$/) do
   @password = 'passWOrd1!'
   @encoded_public_key = 'Ag7PunGy2BmnAi+PGE4/Dm9nCg1URv8wLZwSOggyfmAn' # already base64 encoded
   @encoded_secret_key = 'gCrHtl8VVWs6EuJLy7vPqVdBZWzRAR9ZCjIRRpoWvME=' # already base64 encoded
+  @email = @email = "#{@first_name}_#{@last_name}@test.com"
+  @mobile_number = '+21234567890'
 
   payload = {
       :first_name => @first_name,
       :last_name => @last_name,
       :username => @username,
       :password => @password,
-      :public_key => @encoded_public_key
+      :public_key => @encoded_public_key,
+      :email => @email,
+      :mobile_number => @mobile_number
   }.to_json
 
   puts "Create user payload: #{payload}"

@@ -79,6 +79,12 @@ class UserService
     @user_repository.get_associated_users_by_username username
   end
 
+  def update_password(username, password)
+    user = get_by_username username
+    update(user, {:password => password})
+    {:id => user.id.to_s, :username => user.username}
+  end
+
   def update(current_user, data)
     if @config[:enforce_signature_based_auth]
       # first validate the signature

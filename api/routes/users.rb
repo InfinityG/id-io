@@ -37,9 +37,63 @@ module Sinatra
 
       end
 
-      ########################
+
+      ################################################
+      # Initiate password reset flow with OTP generation
+      ################################################
+
+      # app.post '/users/recovery/otp' do
+      app.post '/users/otp' do
+        content_type :json
+
+        data = JSON.parse(request.body.read, :symbolize_names => true)
+
+        begin
+          IdentityValidator.new.validate_otp_request data
+        rescue ValidationError => e
+          status 400 # bad request
+          return e.message
+        end
+
+        begin
+          #create new otp
+          otp = OtpService.new.create_otp data[:username]
+          status 201
+          otp.to_json
+        rescue IdentityError => e
+          status 400
+          e.message.to_json
+        end
+
+      end
+
+      app.post '/users/reset' do
+        content_type :json
+
+        data = JSON.parse(request.body.read, :symbolize_names => true)
+
+        begin
+          IdentityValidator.new.validate_reset_request data
+        rescue ValidationError => e
+          status 400 # bad request
+          return e.message
+        end
+
+        begin
+          OtpService.new.confirm_otp data[:username], data[:otp], data[:nonce]
+          user = UserService.new.update_password(data[:username], data[:password])
+          status 200
+          user.to_json
+        rescue IdentityError => e
+          status 400
+          e.message.to_json
+        end
+
+      end
+
+      ########################################
       # UPDATE a user (partial update so POST)
-      ########################
+      ########################################
 
       app.post '/users/:username' do
         content_type :json
@@ -66,58 +120,6 @@ module Sinatra
         rescue IdentityError => e
           status 500
           return e.message.to_json
-        end
-
-      end
-
-      ################################################
-      # Initiate password reset flow with OTP generation
-      ################################################
-
-      app.post '/users/recovery/otp' do
-        content_type :json
-
-        data = JSON.parse(request.body.read, :symbolize_names => true)
-
-        begin
-          IdentityValidator.new.validate_otp_request data
-        rescue ValidationError => e
-          status 400 # bad request
-          return e.message
-        end
-
-        begin
-          #create new user
-          otp = OtpService.new.create_otp data[:username]
-          status 201
-          otp.to_json
-        rescue IdentityError => e
-          status 400
-          e.message.to_json
-        end
-
-      end
-
-      app.post '/users/recovery/reset' do
-        content_type :json
-
-        data = JSON.parse(request.body.read, :symbolize_names => true)
-
-        begin
-          IdentityValidator.new.validate_reset_request data
-        rescue ValidationError => e
-          status 400 # bad request
-          return e.message
-        end
-
-        begin
-          #create new user
-          user = OtpService.new.create_otp data[:username]
-          status 201
-          user.to_json
-        rescue IdentityError => e
-          status 400
-          e.message.to_json
         end
 
       end

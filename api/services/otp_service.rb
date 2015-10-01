@@ -26,18 +26,21 @@ class OtpService
     raise IdentityError, USER_NOT_FOUND if user == nil
     raise IdentityError, MOBILE_NUMBER_NOT_REGISTERED if user.mobile_number.to_s == ''
 
-    pin = RandomGenerator.generate_numeric 4
     nonce = RandomGenerator.generate_uuid
 
-    message = @config[:forgotten_password_sms_template] % {:SHORT_HASH => pin}
-    @sms_gateway.send_sms user.mobile_number, message
+    if !@config[:otp_test_mode]
+      pin = RandomGenerator.generate_numeric 4
+      message = @config[:forgotten_password_sms_template] % {:SHORT_HASH => pin}
+      @sms_gateway.send_sms user.mobile_number, message
+    else
+      pin = @config[:otp_test_pin]
+    end
 
     save_otp username, pin, nonce
 
     {:status => 'sent', :nonce => nonce}
   end
 
-  private
   def confirm_otp(username, pin, nonce)
     otp = get_otp nonce
 
@@ -51,6 +54,7 @@ class OtpService
     false
   end
 
+  private
   def get_otp(nonce)
     otp = @otp_repository.get_otp_by_nonce(nonce)
 
