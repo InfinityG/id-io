@@ -24,6 +24,7 @@ module ErrorConstants
     CONNECTION_UNAUTHORISED = 'Connection unauthorised'
     DISCONNECTION_UNAUTHORISED = 'Connection disconnection unauthorised'
     REJECTION_UNAUTHORISED = 'Connection rejection unauthorised'
+    SMS_DELIVERY_ERROR = 'SMS delivery error'
   end
 
   module ValidationErrors
@@ -47,5 +48,6 @@ module ErrorConstants
     INVALID_CONFIRMATION = 'Invalid confirmation'
     INVALID_OTP_REQUEST = 'Invalid OTP request'
     INVALID_PASSWORD_RESET_REQUEST = 'Invalid password reset request'
+    INVALID_META = 'Invalid meta'
   end
 end

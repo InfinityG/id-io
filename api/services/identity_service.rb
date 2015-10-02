@@ -133,6 +133,7 @@ class IdentityService
         :last_name => user.last_name,
         :email => user.email,
         :mobile_number => user.mobile_number,
+        :meta => user.meta,
         :digest => token_uuid_digest,
         :signature => signature,
         :fingerprint => token.fingerprint,

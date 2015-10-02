@@ -37,6 +37,7 @@ class UserService
     confirm_mobile = data[:confirm_mobile]
     webhooks = data[:webhooks]
     registrar = data[:registrar]
+    meta = data[:meta]
 
     # check user doesn't already exist
     raise IdentityError, USERNAME_EXISTS if get_by_username(username) != nil
@@ -47,7 +48,7 @@ class UserService
 
     # save user
     user = @user_repository.save_user first_name, last_name, username, salt, hashed_password,
-                                      public_key, email, role, mobile_number, webhooks, registrar
+                                      public_key, email, role, mobile_number, webhooks, registrar, meta
 
     # send confirmation sms if this is required
     send_confirmation_sms(username, mobile_number) if confirm_mobile

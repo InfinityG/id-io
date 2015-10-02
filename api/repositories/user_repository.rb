@@ -30,7 +30,7 @@ class UserRepository
 
 
   def save_user(first_name, last_name, username, password_salt, password_hash, public_key = '', email = '',
-                role = '', mobile_number = '', webhooks = '', registrar = '')
+                role = '', mobile_number = '', webhooks = '', registrar = '', meta = '')
 
     webhook_arr = create_webhook_array webhooks
 
@@ -44,7 +44,8 @@ class UserRepository
                 role: role,
                 mobile_number: mobile_number,
                 webhooks: webhook_arr,
-                registrar: registrar)
+                registrar: registrar,
+                meta: meta)
   end
 
   def update_user(user)

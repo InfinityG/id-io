@@ -24,7 +24,7 @@ module ConfigurationConstants
         :otp_test_pin => '9999',
         :challenge_expiry => 3600,
         :enforce_user_sig => false,
-        :sms_api_message_uri => 'http://localhost:9004/messages/outbound',
+        :sms_api_host => ENV['SMS_API_HOST'],
         :sms_api_auth_token => ENV['SMS_API_AUTH_TOKEN'],
         :confirmation_webhook_uri => 'http://localhost:9002/confirmations',
         :confirm_number_template => 'Congratulations! A new identity has been created for you. ' +
@@ -54,8 +54,8 @@ module ConfigurationConstants
         :otp_test_pin => nil,
         :challenge_expiry => 3600,
         :enforce_user_sig => false,
-        :sms_api_message_uri => '',
-        :sms_api_auth_token => '',
+        :sms_api_host => ENV['SMS_API_HOST'],
+        :sms_api_auth_token => ENV['SMS_API_AUTH_TOKEN'],
         :confirmation_webhook_uri => '',
         :confirm_number_template => 'Congratulations! A new identity has been created for you. ' +
             'Reply %{SHORT_HASH} to %{REPLY_NUMBER} to activate your registration.',
@@ -84,8 +84,8 @@ module ConfigurationConstants
         :otp_test_pin => nil,
         :challenge_expiry => 3600,
         :enforce_user_sig => false,
-        :sms_api_message_uri => '',
-        :sms_api_auth_token => '',
+        :sms_api_host => ENV['SMS_API_HOST'],
+        :sms_api_auth_token => ENV['SMS_API_AUTH_TOKEN'],
         :confirmation_webhook_uri => '',
         :confirm_number_template => 'Congratulations! A new identity has been created for you. ' +
             'Reply %{SHORT_HASH} to %{REPLY_NUMBER} to activate your registration.',
