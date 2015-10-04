@@ -9,7 +9,7 @@ class UserRepository
   include SmartIdentity::Models
 
   def get_all_users
-    User.all
+    User.fields(:first_name, :last_name, :username, :public_key, :id).all
   end
 
   def get_user(user_id)
