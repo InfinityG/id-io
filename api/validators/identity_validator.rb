@@ -7,6 +7,7 @@ require_relative '../../api/constants/error_constants'
 
 class IdentityValidator
   include ErrorConstants::ValidationErrors
+  include ErrorConstants::IdentityErrors
   include ValidatorUtils
 
   def validate_trust(data)
@@ -202,7 +203,7 @@ class IdentityValidator
       errors.push INVALID_USERNAME unless GeneralValidator.validate_username_strict data[:username]
     end
 
-    errors
+    raise ValidationError, {:valid => false, :errors => errors}.to_json if errors.count > 0
   end
 
   def validate_reset_request(data)
@@ -218,7 +219,7 @@ class IdentityValidator
       errors.push INVALID_PASSWORD unless GeneralValidator.validate_password data[:password]
     end
 
-    errors
+    raise ValidationError, {:valid => false, :errors => errors}.to_json if errors.count > 0
   end
 
 end
