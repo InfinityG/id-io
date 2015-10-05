@@ -48,10 +48,10 @@ class OtpService
 
     if otp != nil && otp.pin == pin && otp.username == username
       @otp_repository.delete_otp otp.id.to_s # immediately kill the otp so that it can't be reused
-      return true
+      true
+    else
+      raise IdentityError, INVALID_OTP
     end
-
-    false
   end
 
   private
