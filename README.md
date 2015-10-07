@@ -65,7 +65,8 @@ A third party library for Objective-C by Richard Moore can be found at [GMEllipt
 ### Trust creation
 This endpoint is used to create a trust between id-io and the relying party. The relying party provides a shared AES key
 which is used for symmetrical encryption of login payloads. *This is an administrative endpoint and so requires a valid
-authorization header.*
+authorization header.* A login uri may also (optionally be provided) for login requests that require a redirect to a login
+endpoint on the relying party (see login. 
 
 - Uri: /trusts
 - Method: POST
@@ -75,7 +76,8 @@ authorization header.*
   ```
   {
     "domain":"www.testdomain.com",
-    "aes_key":"ky4xgi0+KvLYmVp1J5akqkJkv8z5rJsHTo9FcBc0hgo="
+    "aes_key":"ky4xgi0+KvLYmVp1J5akqkJkv8z5rJsHTo9FcBc0hgo=",
+    "login_uri":"https://mydomain.com/login/sso"
   }
   ```
   
@@ -239,6 +241,35 @@ This endpoint is used to login using a signed challenge. It is up to the client/
   }
   ```
 
+### Login with a redirect
+If the trust for the login domain has an associated redirect_uri, and the login request payload contains __"redirect":"true"__,
+ then ID-IO will generate a uri with the JSON payload uri-encoded into a querystring, to perform a client side redirect to. 
+
+- Prerequisites:
+  - User must be registered
+- Uri: /login
+- Method: POST
+- Headers: none
+- Sample payload: 
+  
+  ```
+  {
+    "username":"johnny_mnemonic@test.com",
+    "password":"passwOrd1!",
+    "domain":"www.testdomain.com",
+    "fingerprint":"9f6e26a098b8db4a09b843ca9b074ccb",
+    "redirect":"true"
+  }
+  ```
+  
+- Result:
+  
+  ```
+  {
+      "redirect_uri": "https://www.testdomain.com/login/sso/johnny_mnemonic/eyJ0b2tlbiI6IjRjMGNjMzg5LWFlNzItNGI3OS1iYjExLWE5YmY4ODgwNzc4%0AOCIsImF1dGgiOiJHN0RtVmpkSUpWcm5ycWdzczJuWmI5NERWV2RQZ0tTVUt0%0AeDlobmVXM2dGUlcwRThXaGRXcW15cHg4SE1cbnYzUldVb1JZTGxFM0F3amY3%0AQ3N3dVZxTzJCcnJTOTlBWkUzNWdOK3RPWHhLdEVWc0tGTi9FSXg4UlFkbFxu%0AUGQreVRPVEhpbjRZUkNaQWFDQTBiY25hODF1Y1VncVVRd1FTU3hFT3UxcS9R%0AWFpZQ1FtWEovT2RZZGVSXG5xaFZKRzR4d1ErQ04zQTZsbllJVWVvWTNTQm9K%0AemN3elN0Yit4eGlWL0N0aVdoRjBnNzRYQmg0VFpBM01cblMrNGo4MER5L2lh%0AQkNEYmx0VVlrNHl0dmsvNTJnaTZ3Y2xaQWUwNmU2VXZ2N1Rub0lkWjBOWUZG%0AUnpSZVxuOVJuMnQ4RGQ1c3BMZkcyTXI2Mmlpb3JJVlhsZ2hyNUVPU2J2dXVF%0AOWlXMTlTdi9rZHo5Qko2RUpLbndNXG53c0hHT2tBLzFNaWR2MzdUeEVGZHcz%0ANWE0dW96UHU5eVIrczBmeUJPbUxUQnFpaUFSaWtyc1k0aUlkZ1ZcbmhGWGNh%0Ab1BhQVV1bkFYaW0xSDlTNU9MMXgxUEhzd1dWN0M0VnlwaWIwY2hYNDNQcDRk%0AWjdxdnNFYWZZWVxucTE3YlQ3WFgwRVJWYjZtTDVhSUxHKzY2Q1lBaXZNaldq%0AZmVGL3pTOHBHSWZzaWhDSTRPVEd0SkQvWUgyXG5zb1dBMjZtNXdrZk9Jb2E1%0ASmthTERKd21CaWVUT0NKL3NwQkZYK2xaVXQzVmpwMFlsdlhyQ0RyMU9zRG1c%0AbjhncWMwWmhBVkM0QzU5bHRDaHhscFpwRk9ablR1a1Mxa0tOdExTTUYwN3dM%0Ac0czaXNLWHlYMHFXZk44Zlxuby9OS0x3Y1p3VUdNcVBON3dTYVYxVmdzUmZS%0AK2gxUjZsV0pVZjcyOXdvcWd2MGF6bVB6N1E3TUhKSFhuXG5KV0lVK0E9PVxu%0AIiwiaXYiOiJRTnpoR3hUQTdBSDFqL3hxNlNqSnBnPT1cbiJ9%0A"
+  }
+  ```
+  
 ### Create a connection with another user
 This endpoint is used to request a 'connection' to another registered user (much like a 'friend' request). 
 The 'origin' user is the one who initiates the request; the 'target' user is the user who needs to approve the 
