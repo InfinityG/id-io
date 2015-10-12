@@ -14,12 +14,15 @@ require './api/routes/trust'
 require './api/routes/webhooks'
 require './api/routes/connections'
 require './api/services/config_service'
+require './api/services/confirmation_service'
 
 class ApiApp < Sinatra::Base
 
   configure do
 
     config = ConfigurationService.new.get_config
+
+    LOGGER = Logger.new config[:logger_file], config[:logger_age], config[:logger_size]
 
     # Register routes
     register Sinatra::CorsRoutes
@@ -42,6 +45,10 @@ class ApiApp < Sinatra::Base
     end
 
     MongoMapper.database = config[:mongo_db]
+
+    #start the confirmation service for transactions...
+    confirmation_service = ConfirmationService.new
+    confirmation_service.start
 
   end
 

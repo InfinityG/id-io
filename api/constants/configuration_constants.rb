@@ -30,6 +30,13 @@ module ConfigurationConstants
         :confirm_number_template => 'Congratulations! A new identity has been created for you. ' +
             'Reply %{SHORT_HASH} to %{REPLY_NUMBER} to activate your registration.',
         :forgotten_password_sms_template => 'You have requested to reset your password. Your one time PIN is %{SHORT_HASH}.'
+        :ripple_rest_uri => '',
+        :ripple_default_currency => 'IDO',
+        :ripple_max_transaction_fee => '100000',    # in Ripple 'drops'
+        :ripple_hot_wallet_secret => ENV['RIPPLE_HOT_SECRET'],
+        :ripple_hot_wallet_address => ENV['RIPPLE_HOT_ADDRESS'],
+        :ripple_cold_wallet_address => ENV['RIPPLE_COLD_ADDRESS'],
+        :ripple_identity_wallet_address => ENV['RIPPLE_ID_WALLET_ADDRESS']
     }
 
     TEST = {
@@ -59,6 +66,13 @@ module ConfigurationConstants
         :confirmation_webhook_uri => '',
         :confirm_number_template => 'Congratulations! A new identity has been created for you. ' +
             'Reply %{SHORT_HASH} to %{REPLY_NUMBER} to activate your registration.',
+        :ripple_rest_uri => '',
+        :ripple_default_currency => 'IDO',
+        :ripple_max_transaction_fee => '100000',    # in Ripple 'drops'
+        :ripple_hot_wallet_secret => ENV['RIPPLE_HOT_SECRET'],
+        :ripple_hot_wallet_address => ENV['RIPPLE_HOT_ADDRESS'],
+        :ripple_cold_wallet_address => ENV['RIPPLE_COLD_ADDRESS'],
+        :ripple_identity_wallet_address => ENV['RIPPLE_ID_WALLET_ADDRESS']
         :forgotten_password_sms_template => 'You have requested to reset your password. Your one time PIN is %{SHORT_HASH}.'
     }
 
@@ -90,6 +104,13 @@ module ConfigurationConstants
         :confirm_number_template => 'Congratulations! A new identity has been created for you. ' +
             'Reply %{SHORT_HASH} to %{REPLY_NUMBER} to activate your registration.',
         :forgotten_password_sms_template => 'You have requested to reset your password. Your one time PIN is %{SHORT_HASH}.'
+        :ripple_rest_uri => '',
+        :ripple_default_currency => 'IDO',
+        :ripple_max_transaction_fee => '100000',    # in Ripple 'drops'
+        :ripple_hot_wallet_secret => ENV['RIPPLE_HOT_SECRET'],
+        :ripple_hot_wallet_address => ENV['RIPPLE_HOT_ADDRESS'],
+        :ripple_cold_wallet_address => ENV['RIPPLE_COLD_ADDRESS'],
+        :ripple_identity_wallet_address => ENV['RIPPLE_ID_WALLET_ADDRESS']
     }
   end
 end

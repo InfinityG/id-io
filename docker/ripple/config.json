@@ -1,0 +1,17 @@
+{
+  "config_version": "2.0.3",
+  "debug": false,
+  "port": 5990,
+  "host": "0.0.0.0",
+  "ssl_enabled": false,
+  "ssl": {
+    "key_path": "/etc/ssl/private/server.key",
+    "cert_path": "/etc/ssl/certs/server.crt",
+    "reject_unauthorized": true
+  },
+  "db_path": "./ripple-rest.db",
+  "max_transaction_fee": 1000000,
+  "rippled_servers": [
+    "wss://s1.ripple.com:443"
+  ]
+}

@@ -6,6 +6,7 @@ module ErrorConstants
     USER_NOT_FOUND = 'User cannot be found'
     OTP_NOT_FOUND = 'OTP cannot be found'
     MOBILE_NUMBER_NOT_REGISTERED = 'Mobile number not registered for user'
+    USER_REGISTRATION_NOT_VALIDATED = 'Username not yet validated on blockchain'
     PUBLIC_KEY_NOT_REGISTERED = 'Cannot validate signature - no public key registered for user'
     DOMAIN_NOT_AUTHORIZED = 'Domain not authorized'
     INVALID_PASSWORD = 'Password invalid'
@@ -24,6 +25,7 @@ module ErrorConstants
     CONNECTION_UNAUTHORISED = 'Connection unauthorised'
     DISCONNECTION_UNAUTHORISED = 'Connection disconnection unauthorised'
     REJECTION_UNAUTHORISED = 'Connection rejection unauthorised'
+    TRANSACTION_ERROR = 'An error occurred when attempting a transaction'
     SMS_DELIVERY_ERROR = 'SMS delivery error'
   end
 

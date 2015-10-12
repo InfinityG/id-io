@@ -1,4 +1,3 @@
 .idea
-Gemfile.lock
-.env*
-Procfile*
+
+app_log.log

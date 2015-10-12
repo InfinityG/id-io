@@ -1,5 +1,5 @@
 # id-io
-Identity/registration service built on Sinatra
+An identity/registration service built on Sinatra
 
 __PLEASE NOTE__: This code is still in alpha development. Some features are still in early development and some are still to be implemented.
 
