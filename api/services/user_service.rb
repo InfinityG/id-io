@@ -4,6 +4,7 @@ require './api/repositories/user_repository'
 require './api/services/config_service'
 require './api/services/challenge_service'
 require './api/services/identity_service'
+require './api/services/transaction_service'
 require './api/utils/hash_generator'
 require './api/utils/rest_util'
 require './api/constants/error_constants'
@@ -16,11 +17,12 @@ class UserService
 
   def initialize(user_repository = UserRepository,
                  config_service = ConfigurationService, challenge_service = ChallengeService,
-                 identity_service = IdentityService, rest_util = RestUtil)
+                 identity_service = IdentityService, transaction_service = TransactionService, rest_util = RestUtil)
     @user_repository = user_repository.new
     @config = config_service.new.get_config
     @challenge_service = challenge_service.new
     @identity_service = identity_service.new
+    @transaction_service = transaction_service.new
     @rest_util = rest_util.new
   end
 
@@ -50,6 +52,9 @@ class UserService
     user = @user_repository.save_user first_name, last_name, username, salt, hashed_password,
                                       public_key, email, role, mobile_number, webhooks, registrar, meta
 
+    # create a new transaction on the blockchain with embedded details
+    create_blockchain_record(user) if (@config[:blockchain_enabled])
+
     # send confirmation sms if this is required
     send_confirmation_sms(username, mobile_number) if confirm_mobile
 
@@ -57,6 +62,20 @@ class UserService
     challenge_data = @challenge_service.create user
 
     {:id => user.id, :username => user.username, :challenge => challenge_data}
+  end
+
+  def create_blockchain_record(user)
+    begin
+      memo_hash = public_key != '' ?
+          {:u_id => user.username, :u_ec_pub => user.public_key, :op_code => 'U_CREATE'} :
+          {:u_id => user.username, :op_code => 'U_CREATE'}
+
+      @transaction_service.execute_deposit(user, 1.0, memo_hash)
+    rescue IdentityError
+      # roll back user creation
+      @user_repository.delete_user user.id
+      raise
+    end
   end
 
   #TODO: refactor this to handle paging
@@ -166,7 +185,7 @@ class UserService
         :webhook => sms_webhook
     }.to_json
 
-    @rest_util.execute_post sms_api_uri, sms_api_auth_token, confirm_number_payload
+    @rest_util.execute_post sms_api_uri, confirm_number_payload, sms_api_auth_token
   end
 
 end

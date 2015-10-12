@@ -1,4 +1,4 @@
-require './api/gateway/ripple_rest_gateway'
+require './api/gateways/ripple_rest_gateway'
 require './api/utils/hash_generator'
 require './api/repositories/transaction_repository'
 require './api/services/config_service'
@@ -6,16 +6,17 @@ require './api/services/config_service'
 
 class TransactionService
 
+  include HashGenerator
+
   def initialize(ripple_rest_gateway = RippleRestGateway, hash_generator = HashGenerator,
                  transaction_repository = TransactionRepository, config_service = ConfigurationService)
     @ripple_gateway = ripple_rest_gateway.new
-    @hash_generator = hash_generator.new
     @transaction_repository = transaction_repository.new
     @config = config_service.new.get_config
   end
 
   def execute_deposit(user, amount, memo_hash)
-    client_resource_id = @hash_generator.generate_uuid
+    client_resource_id = HashGenerator.generate_uuid
     payment = @ripple_gateway.prepare_deposit user[:id].to_s, amount, memo_hash
 
     # see https://ripple.com/build/transactions/#transaction-results

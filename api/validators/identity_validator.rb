@@ -7,7 +7,7 @@ require_relative '../../api/constants/error_constants'
 
 class IdentityValidator
   include ErrorConstants::ValidationErrors
-  include ErrorConstants::IdentityErrors
+  # include ErrorConstants::IdentityErrors
   include ValidatorUtils
 
   def validate_trust(data)

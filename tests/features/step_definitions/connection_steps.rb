@@ -84,7 +84,7 @@ When(/^I send a connection confirmation request to the API$/) do
 
   puts "Confirm connection payload: #{payload}"
 
-  result = RestUtil.new.execute_post(IDENTITY_API_URI + "/connections/#{@connection_id}", @target_login_token, payload)
+  result = RestUtil.new.execute_post(IDENTITY_API_URI + "/connections/#{@connection_id}", payload, @target_login_token)
   puts "Confirm connection result: #{result.response_body}"
   puts "Response code: #{result.response_code}"
 
@@ -119,7 +119,7 @@ def set_trusted_domain
 
   puts "Create trusted domain payload: #{payload}"
 
-  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/trusts', IDENTITY_API_AUTH_KEY, payload)
+  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/trusts', payload, IDENTITY_API_AUTH_KEY)
   puts "Create trusted domain result: #{result.response_body}"
 end
 
@@ -134,7 +134,7 @@ def register_user(first_name, last_name, username, public_key)
 
   puts "Create user payload: #{payload}"
 
-  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/users', nil, payload)
+  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/users', payload, nil)
   puts "Create user result: #{result.response_body}"
   puts "Response code: #{result.response_code}"
 
@@ -148,7 +148,7 @@ def get_challenge(username)
 
   puts "Create challenge payload: #{payload}"
 
-  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/challenge', nil, payload)
+  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/challenge', payload, nil)
   puts "Create challenge result: #{result.response_body}"
   puts "Response code: #{result.response_code}"
 
@@ -172,7 +172,7 @@ def login_user(username, challenge, secret_key, trusted_domain)
 
   puts "Create login payload: #{payload}"
 
-  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/login', nil, payload)
+  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/login', payload, nil)
   puts "Login user result: #{result.response_body}"
   puts "Response code: #{result.response_code}"
 
@@ -199,7 +199,7 @@ def create_connection_request(origin_login_token, origin_secret_key, target_user
 
   puts "Create connection payload: #{payload}"
 
-  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/connections', origin_login_token, payload)
+  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/connections', payload, origin_login_token)
   puts "Create connection user result: #{result.response_body}"
   puts "Response code: #{result.response_code}"
 

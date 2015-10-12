@@ -9,9 +9,7 @@ module ErrorConstants
     USER_REGISTRATION_NOT_VALIDATED = 'Username not yet validated on blockchain'
     PUBLIC_KEY_NOT_REGISTERED = 'Cannot validate signature - no public key registered for user'
     DOMAIN_NOT_AUTHORIZED = 'Domain not authorized'
-    INVALID_PASSWORD = 'Password invalid'
-    INVALID_OTP = 'OTP invalid'
-    INVALID_NONCE = 'Nonce invalid'
+    INVALID_PASSWORD = 'Invalid password'
     INVALID_SIGNED_DATA = 'Invalid signed data'
     INVALID_SIGNATURE = 'Invalid signature'
     INVALID_DOMAIN = 'Invalid domain'
@@ -30,6 +28,7 @@ module ErrorConstants
   end
 
   module ValidationErrors
+    NO_DATA_FOUND = 'No data found!'
     INVALID_FIRST_NAME = 'Invalid first name'
     INVALID_LAST_NAME = 'Invalid last name'
     INVALID_USERNAME = 'Invalid username'
@@ -41,7 +40,8 @@ module ErrorConstants
     INVALID_REDIRECT = 'Invalid redirect'
     INVALID_AES_KEY = 'Invalid AES key'
     INVALID_LOGIN_URI = 'Invalid login uri'
-    NO_DATA_FOUND = 'No data found!'
+    INVALID_OTP = 'OTP invalid'
+    INVALID_NONCE = 'Nonce invalid'
     NO_CHALLENGE_FOUND = 'No challenge found!'
     INVALID_DIGEST = 'Invalid digest'
     INVALID_SIGNATURE = 'Invalid challenge signature'

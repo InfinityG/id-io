@@ -1,5 +1,5 @@
 require 'json'
-require './api/gateway/ripple_rest_gateway'
+require './api/gateways/ripple_rest_gateway'
 require './api/services/transaction_service'
 require './api/services/user_service'
 

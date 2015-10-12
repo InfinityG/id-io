@@ -23,7 +23,7 @@ class SmsGateway
     auth_header = @config[:sms_api_auth_token]
 
     begin
-      response = @rest_util.execute_post(uri, auth_header, data.to_json)
+      response = @rest_util.execute_post(uri, data.to_json, auth_header)
       if response.response_code != 200
         message = "#{SMS_DELIVERY_ERROR} | Response code: #{response.response_code}"
         raise IdentityError, message

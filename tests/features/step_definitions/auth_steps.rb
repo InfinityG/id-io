@@ -37,7 +37,7 @@ Given(/^I am a registered user$/) do
 
   puts "Create user payload: #{payload}"
 
-  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/users', IDENTITY_API_AUTH_KEY, payload)
+  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/users', payload, IDENTITY_API_AUTH_KEY)
   puts "Create user result: #{result.response_body}"
 
   @user_id = JSON.parse(result.response_body, :symbolize_names => true)
@@ -55,7 +55,7 @@ And(/^I want to login to a trusted domain$/) do
 
   puts "Create trusted domain payload: #{payload}"
 
-  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/trusts', IDENTITY_API_AUTH_KEY, payload)
+  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/trusts', payload, IDENTITY_API_AUTH_KEY)
   puts "Create trusted domain result: #{result.response_body}"
 
   assert result.response_code == 200
@@ -68,7 +68,7 @@ And(/^I have requested a challenge$/) do
 
   puts "Create challenge payload: #{payload}"
 
-  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/challenge', IDENTITY_API_AUTH_KEY, payload)
+  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/challenge', payload, IDENTITY_API_AUTH_KEY)
   puts "Create challenge result: #{result.response_body}"
 
   @challenge_result = JSON.parse(result.response_body, :symbolize_names => true)
@@ -168,7 +168,7 @@ end
 When(/^I log in with a challenge$/) do
   puts "Login payload: #{@signed_challenge}"
 
-  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/login', IDENTITY_API_AUTH_KEY, @signed_challenge)
+  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/login', @signed_challenge, IDENTITY_API_AUTH_KEY)
   puts "Login result: #{result.response_body}"
 
   @login_result = JSON.parse(result.response_body, :symbolize_names => true)
@@ -185,7 +185,7 @@ When(/^I log in with a password$/) do
 
   puts "Login payload: #{payload}"
 
-  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/login', IDENTITY_API_AUTH_KEY, payload)
+  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/login', payload, IDENTITY_API_AUTH_KEY)
   puts "Login result: #{result.response_body}"
 
   @login_result = JSON.parse(result.response_body, :symbolize_names => true)

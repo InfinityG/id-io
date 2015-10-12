@@ -9,7 +9,7 @@ When(/^I initiate an OTP request$/) do
 
   puts "Create OTP payload: #{payload}"
 
-  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/users/otp', nil, payload)
+  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/users/otp', payload, nil)
   puts "Create OTP result: #{result.response_body}"
 
   @otp_response = JSON.parse(result.response_body, :symbolize_names => true)
@@ -34,7 +34,7 @@ When(/^I send a password request to the API$/) do
 
   puts "Create password reset payload: #{payload}"
 
-  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/users/reset', nil, payload)
+  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/users/reset', payload, nil)
   puts "Create passwprd reset result: #{result.response_body}"
 
   @reset_response_code = result.response_code

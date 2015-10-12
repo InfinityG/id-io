@@ -57,7 +57,7 @@ When(/^I send a registration request to the API$/) do
 
   puts "Create user payload: #{payload}"
 
-  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/users', nil, payload)
+  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/users', payload, nil)
   puts "Create user result: #{result.response_body}"
   puts "Response code: #{result.response_code}"
 
@@ -114,7 +114,7 @@ When(/^I send an update request to the API$/) do
 
   puts "Update user payload: #{payload}"
 
-  result = RestUtil.new.execute_post(IDENTITY_API_URI + "/users/#{@username}", @auth_header, payload)
+  result = RestUtil.new.execute_post(IDENTITY_API_URI + "/users/#{@username}", payload, @auth_header)
   puts "Update user result: #{result.response_body}"
   puts "Response code: #{result.response_code}"
 
@@ -134,7 +134,7 @@ def set_trusted_domain
 
   puts "Create trusted domain payload: #{payload}"
 
-  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/trusts', IDENTITY_API_AUTH_KEY, payload)
+  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/trusts', payload, IDENTITY_API_AUTH_KEY)
   puts "Create trusted domain result: #{result.response_body}"
 end
 
@@ -147,7 +147,7 @@ def login
 
   puts "Login payload: #{payload}"
 
-  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/login', nil, payload)
+  result = RestUtil.new.execute_post(IDENTITY_API_URI + '/login', payload, nil)
   puts "Login result: #{result.response_body}"
   puts "Response code: #{result.response_code}"
 
