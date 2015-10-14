@@ -29,8 +29,8 @@ class UserRepository
   end
 
 
-  def save_user(first_name, last_name, username, password_salt, password_hash, public_key = '', email = '',
-                role = '', mobile_number = '', webhooks = '', registrar = '', meta = '')
+  def create_user(first_name, last_name, username, password_salt, password_hash, public_key = '', email = '',
+                  role = '', mobile_number = '', webhooks = '', registrar = '', meta = '')
 
     webhook_arr = create_webhook_array webhooks
 
@@ -45,11 +45,33 @@ class UserRepository
                 mobile_number: mobile_number,
                 webhooks: webhook_arr,
                 registrar: registrar,
-                meta: meta)
+                meta: meta,
+                doc_version: 1)
   end
 
   def update_user(user)
     user.save
+  end
+
+  # Optimistic lock here
+  def update_password(user, salt, password_hash)
+    user_id = user.id.to_s
+    doc_version = user.doc_version
+
+    User.set({:id => user_id, :doc_version => doc_version},
+             :doc_version => doc_version.to_i + 1,
+             :password_hash => password_hash,
+             :password_salt => salt)
+  end
+
+  # Optimistic lock here
+  def update_block_status(user, block_status)
+    user_id = user.id.to_s
+    doc_version = user.doc_version
+
+    User.set({:id => user_id, :doc_version => doc_version},
+             :doc_version => doc_version.to_i + 1,
+             :block_status => block_status)
   end
 
   def delete_user(user_id)

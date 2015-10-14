@@ -25,6 +25,7 @@ module ErrorConstants
     REJECTION_UNAUTHORISED = 'Connection rejection unauthorised'
     TRANSACTION_ERROR = 'An error occurred when attempting a transaction'
     SMS_DELIVERY_ERROR = 'SMS delivery error'
+    PASSWORD_CHANGE_ERROR = 'Unable to change password. Please try again.'
   end
 
   module ValidationErrors

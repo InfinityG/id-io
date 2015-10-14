@@ -47,8 +47,8 @@ class TransactionService
     @transaction_repository.save_transaction user_id, resource_id, type, amount, currency, confirmation_url
   end
 
-  def confirm_transaction(transaction_id, confirmation_result)
-    @transaction_repository.confirm_transaction transaction_id, confirmation_result
+  def confirm_transaction(transaction, confirmation_result)
+    @transaction_repository.confirm_transaction transaction, confirmation_result
   end
 
 end

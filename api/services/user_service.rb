@@ -49,8 +49,8 @@ class UserService
     hashed_password = HashGenerator.generate_password_hash password, salt
 
     # save user
-    user = @user_repository.save_user first_name, last_name, username, salt, hashed_password,
-                                      public_key, email, role, mobile_number, webhooks, registrar, meta
+    user = @user_repository.create_user first_name, last_name, username, salt, hashed_password,
+                                        public_key, email, role, mobile_number, webhooks, registrar, meta
 
     # create a new transaction on the blockchain with embedded details
     create_blockchain_record(user) if (@config[:blockchain_enabled])
@@ -66,9 +66,11 @@ class UserService
 
   def create_blockchain_record(user)
     begin
+      username_hash = HashGenerator.generate_hash user.username
+
       memo_hash = public_key != '' ?
-          {:u_id => user.username, :u_ec_pub => user.public_key, :op_code => 'U_CREATE'} :
-          {:u_id => user.username, :op_code => 'U_CREATE'}
+          {:U_HASH => username_hash, :U_PKEY => user.public_key, :OP_CODE => 'U_CREATE'} :
+          {:U_HASH => username_hash, :OP_CODE => 'U_CREATE'}
 
       @transaction_service.execute_deposit(user, 1.0, memo_hash)
     rescue IdentityError
@@ -101,8 +103,25 @@ class UserService
 
   def update_password(username, password)
     user = get_by_username username
-    update(user, {:password => password})
+    raise IdentityError, INVALID_USERNAME if user == nil
+
+    if password != ''
+      # create salt and hash
+      salt = HashGenerator.generate_salt
+      hashed_password = HashGenerator.generate_password_hash password, salt
+
+      result = @user_repository.update_password user, salt, hashed_password
+      raise IdentityError, PASSWORD_CHANGE_ERROR if result == nil
+
+    else
+      raise IdentityError, INVALID_PASSWORD
+    end
+
     {:id => user.id.to_s, :username => user.username}
+  end
+
+  def update_block_status(user, status)
+    @user_repository.update_block_status user, status
   end
 
   def update(current_user, data)

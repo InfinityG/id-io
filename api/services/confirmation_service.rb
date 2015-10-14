@@ -17,7 +17,7 @@ class ConfirmationService
       while true
         pending_transactions = transaction_service.get_pending_transactions
 
-        pending_transactions.each { |transaction|
+        pending_transactions.each do |transaction|
 
           confirmation_url = transaction.confirmation_url
 
@@ -28,13 +28,14 @@ class ConfirmationService
           end
 
           begin
-            transaction_service.confirm_transaction transaction.id, result
-            user_service.update_block_info transaction.user_id, true, result[:payment_hash]
+            transaction_service.confirm_transaction transaction, result
+            user = user_service.get_user transaction.user_id.to_s
+            user_service.update_block_status user, result[:status]
           rescue Exception => e
             LOGGER.error "Error updating transaction info on database || Error: #{e.message}"
           end if result[:status] == 'validated'
 
-        }
+        end
 
         sleep 5.0
 
