@@ -29,6 +29,10 @@ __PLEASE NOTE__: This code is still in alpha development. Some features are stil
 - __Webhooks__
   - Registrations on the API support a Webhook callback mechanism on successful registration
 
+## Potential improvements
+ During the course of development, a number of areas have become obvious that require improvement.
+ - The auth token structure should be refactored to use the [JWT](https://tools.ietf.org/html/rfc7519) (json web token) format.
+
 ## Dependencies
 - The application is written in Ruby and Sinatra DSL
 - Bundler is required for managing gem dependencies - just run __bundle install__
