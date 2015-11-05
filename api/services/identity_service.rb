@@ -126,6 +126,45 @@ class IdentityService
     signature = @signature_service.sign token_uuid_digest, api_secret
 
     # create plaintext data to encrypt
+    #TODO: reftactor this to be in the JWT format
+    #eg:
+
+    #     header:
+    #     {
+    #         "alg": "ES256",
+    #         "typ": "JWT"
+    #     }
+    #
+    #     payload:
+    #     {
+    #         "created": "144071341485",
+    #         "expires": "144071341485",
+    #         "issuer": {
+    #             "name":"id-io",
+    #             "publicKey": "03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479"
+    #         },
+    #         "entity": {
+    #             "id":"",
+    #             "username":"",
+    #             "first_name":"",
+    #             "last_name":"",
+    #             "email":"",
+    #             "mobile_number":"",
+    #             "role":""
+    #           },
+    #           "device": {
+    #             "ip_address":""
+    #             "fingerprint":""
+    #           }
+    #     }
+
+    #    signature:
+    #   "oO7ROPKq3T3X0azAXzHsf6ub6CYy5nUUFDoy8MS22B3TlYisqsBrRtzWIQcSYiFXLytrXwAdt6vjehj3OFioDQ"
+
+
+    # OUTPUT: {"jwt": header.payload.signature, "iv":""}
+
+
     plaintext_data = {
         :id => user.id,
         :username => user.username,
@@ -150,7 +189,8 @@ class IdentityService
     # if redirect == true, redirect to the domain login uri, with the escaped JSON auth on the querystring
     if (redirect != nil) && (redirect)
       base64_escaped_auth = URI.escape(Base64.encode64(auth.to_json))
-      redirect_uri = "#{trust.login_uri}/#{user.username}/#{base64_escaped_auth}"
+      # redirect_uri = "#{trust.login_uri}/#{user.username}/#{base64_escaped_auth}"
+      redirect_uri = "#{trust.login_uri}/#{base64_escaped_auth}"
       return {:redirect_uri => redirect_uri}
     end
 

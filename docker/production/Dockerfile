@@ -61,7 +61,7 @@ CMD ["/bin/bash"]
 # sudo docker build -t infinityg/id-io:v1 .
 
 # RUN CONTAINER:
-# sudo docker run -e API_AUTH_TOKEN=********* -e API_SECRET_KEY=********* -e API_PUBLIC_KEY=********* -e MONGO_DB=id-io -e MONGO_REPLICATED=true -e MONGO_HOST_1=10.0.1.10:27017 -e MONGO_HOST_2=10.0.1.11:27017 -e MONGO_HOST_3=10.0.1.12:27017 -e SMS_API_AUTH_TOKEN=********* -p 9002:9002 -it --rm infinityg/id-io:v1
+# sudo docker run -e API_AUTH_TOKEN=* -e API_SECRET_KEY=* -e API_PUBLIC_KEY=* -e MONGO_DB=id-io -e MONGO_REPLICATED=true -e MONGO_HOST_1=*:27017 -e MONGO_HOST_2=*:27017 -e MONGO_HOST_3=*:27017 -e SMS_API_AUTH_TOKEN=* -p 9002:9002 -it --rm infinityg/id-io:v1
 
 # OTHER USEFUL COMMANDS:
 # - Inspect: sudo docker inspect [container_id]
