@@ -53,7 +53,9 @@ RUN mkdir -p /data/db
 
 WORKDIR /home/id-io
 EXPOSE 9002
-CMD mongod --fork --logpath /var/log/mongodb.log && rackup -E test
+
+CMD ["/bin/bash"]
+#CMD mongod --fork --logpath /var/log/mongodb.log && rackup -E test
 
 
 ################################################################################
@@ -64,7 +66,7 @@ CMD mongod --fork --logpath /var/log/mongodb.log && rackup -E test
 # sudo docker build -t infinityg/id-io:v1 .
 
 # RUN CONTAINER:
-# sudo docker run -e API_AUTH_TOKEN=********* -e API_SECRET_KEY=********* -e API_PUBLIC_KEY=********* -e MONGO_DB=id-io -e MONGO_REPLICATED=false -e MONGO_HOST_1=localhost:27017 -e SMS_API_AUTH_TOKEN=********* -p 9002:9002 -it --rm infinityg/id-io:v1
+# sudo docker run -e API_AUTH_TOKEN=* -e API_SECRET_KEY=* -e API_PUBLIC_KEY=* -e MONGO_DB=id-io -e MONGO_REPLICATED=false -e MONGO_HOST_1=localhost:27017 -e SMS_API_AUTH_TOKEN=* -p 9002:9002 -it --rm infinityg/id-io:v1
 
 # OTHER USEFUL COMMANDS:
 # - Inspect: sudo docker inspect [container_id]
