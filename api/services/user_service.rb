@@ -30,7 +30,10 @@ class UserService
   def create(data)
     first_name = data[:first_name]
     last_name = data[:last_name]
-    username = data[:username]
+
+    # username should be forced to lower to ensure duplicates aren't created
+    username = data[:username].to_s.downcase
+
     password = data[:password]
     email = data[:email]
     public_key = data[:public_key]
@@ -90,19 +93,19 @@ class UserService
   end
 
   def get_by_username_and_mobile_number(username, mobile_number)
-    @user_repository.get_by_username_and_mobile(username, mobile_number)
+    @user_repository.get_by_username_and_mobile(username.to_s.downcase, mobile_number)
   end
 
   def get_by_username(username)
-    @user_repository.get_by_username username
+    @user_repository.get_by_username username.to_s.downcase
   end
 
   def get_associated_users_by_username(username)
-    @user_repository.get_associated_users_by_username username
+    @user_repository.get_associated_users_by_username username.to_s.downcase
   end
 
   def update_password(username, password)
-    user = get_by_username username
+    user = get_by_username username.to_s.downcase
     raise IdentityError, INVALID_USERNAME if user == nil
 
     if password != ''
@@ -157,7 +160,7 @@ class UserService
   end
 
   def confirm_mobile(username, mobile_number)
-    user = get_by_username(username)
+    user = get_by_username(username.to_s.downcase)
     raise IdentityError, USER_NOT_FOUND if user == nil
     raise IdentityError, INVALID_MOBILE_FOR_USER if user.mobile_number != mobile_number
 
@@ -166,7 +169,7 @@ class UserService
   end
 
   def confirm_email(username, email)
-    user = get_by_username(username)
+    user = get_by_username(username.to_s.downcase)
     raise IdentityError, USER_NOT_FOUND if user == nil
     raise IdentityError, INVALID_EMAIL_FOR_USER if user.email != email
 

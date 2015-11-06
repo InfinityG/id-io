@@ -57,7 +57,7 @@ module Sinatra
 
         begin
           #create new otp
-          otp = OtpService.new.create_otp data[:username]
+          otp = OtpService.new.create_otp data[:username].to_s.downcase
           status 201
           otp.to_json
         rescue IdentityError => e
@@ -80,8 +80,13 @@ module Sinatra
         end
 
         begin
-          OtpService.new.confirm_otp data[:username], data[:otp], data[:nonce]
-          user = UserService.new.update_password(data[:username], data[:password])
+          username = data[:username].to_s.downcase
+          otp = data[:otp]
+          nonce = data[:nonce]
+          password = data[:password]
+
+          OtpService.new.confirm_otp username, otp, nonce
+          user = UserService.new.update_password(username, password)
           status 200
           user.to_json
         rescue IdentityError => e
@@ -99,7 +104,7 @@ module Sinatra
         content_type :json
 
         #  ensure that the current logged in user is attempting to update his own data
-        username = params[:username]
+        username = params[:username].to_s.downcase
         halt 401, 'Unauthorized' if username != @current_user.username
 
         data = JSON.parse(request.body.read, :symbolize_names => true)

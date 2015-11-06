@@ -21,7 +21,7 @@ class OtpService
   end
 
   def create_otp(username)
-    user = @user_repository.get_by_username username
+    user = @user_repository.get_by_username username.to_s.downcase
 
     raise IdentityError, USER_NOT_FOUND if user == nil
     raise IdentityError, MOBILE_NUMBER_NOT_REGISTERED if user.mobile_number.to_s == ''
@@ -36,7 +36,7 @@ class OtpService
       pin = @config[:otp_test_pin]
     end
 
-    save_otp username, pin, nonce
+    save_otp username.to_s.downcase, pin, nonce
 
     {:status => 'sent', :nonce => nonce}
   end
