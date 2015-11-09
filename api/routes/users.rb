@@ -1,5 +1,6 @@
 require 'sinatra/base'
 require './api/services/user_service'
+require './api/services/config_service'
 require './api/services/otp_service'
 require './api/errors/identity_error'
 require './api/errors/validation_error'
@@ -16,7 +17,16 @@ module Sinatra
       app.post '/users' do
         content_type :json
 
-        data = JSON.parse(request.body.read, :symbolize_names => true)
+        body = request.body.read
+
+        config = ConfigurationService.new.get_config
+
+        if config[:force_ascii_conversion]
+          encoded = body.force_encoding('ISO-8859-1').encode!('UTF-8')
+          data = JSON.parse(encoded, :symbolize_names => true)
+        else
+          data = JSON.parse(body, :symbolize_names => true)
+        end
 
         begin
           IdentityValidator.new.validate_new_user data

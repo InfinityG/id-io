@@ -5,6 +5,7 @@ module ConfigurationConstants
     DEVELOPMENT = {
         :host => '0.0.0.0',
         :port => 9002,
+        :force_ascii_conversion => true,
         :api_auth_token => ENV['API_AUTH_TOKEN'],
         :api_secret_ecdsa_key => ENV['API_SECRET_KEY'],
         :api_public_ecdsa_key => ENV['API_PUBLIC_KEY'],
@@ -43,6 +44,7 @@ module ConfigurationConstants
     TEST = {
         :host => '0.0.0.0',
         :port => 9002,
+        :force_ascii_conversion => ENV['FORCE_ASCII_CONVERSION'],
         :api_auth_token => ENV['API_AUTH_TOKEN'],
         :api_secret_ecdsa_key => ENV['API_SECRET_KEY'],
         :api_public_ecdsa_key => ENV['API_PUBLIC_KEY'],
@@ -81,6 +83,7 @@ module ConfigurationConstants
     PRODUCTION = {
         :host => '0.0.0.0',
         :port => 9002,
+        :force_ascii_conversion => ENV['FORCE_ASCII_CONVERSION'],
         :api_auth_token => ENV['API_AUTH_TOKEN'],
         :api_secret_ecdsa_key => ENV['API_SECRET_KEY'],
         :api_public_ecdsa_key => ENV['API_PUBLIC_KEY'],
