@@ -16,12 +16,7 @@ module Sinatra
       app.post '/users' do
         content_type :json
 
-        body = request.body.read
-
-        # force encoding to handle non-utf8 payloads
-        force_encoded = body.force_encoding('UTF-8')
-
-        data = JSON.parse(force_encoded, :symbolize_names => true)
+        data = JSON.parse(request.body.read, :symbolize_names => true)
 
         begin
           IdentityValidator.new.validate_new_user data
