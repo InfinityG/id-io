@@ -4,11 +4,16 @@ require 'ig-validator-utils'
 
 require_relative '../../api/errors/validation_error'
 require_relative '../../api/constants/error_constants'
+require_relative '../../api/services/config_service'
 
 class IdentityValidator
   include ErrorConstants::ValidationErrors
   # include ErrorConstants::IdentityErrors
   include ValidatorUtils
+
+  def initialize
+    @config = ConfigurationService.new.get_config
+  end
 
   def validate_trust(data)
     errors = []
@@ -36,7 +41,12 @@ class IdentityValidator
       errors.push INVALID_FIRST_NAME unless GeneralValidator.validate_string_strict data[:first_name]
       errors.push INVALID_LAST_NAME unless GeneralValidator.validate_string_strict data[:last_name]
       errors.push INVALID_USERNAME unless GeneralValidator.validate_username_strict data[:username]
-      errors.push INVALID_PASSWORD unless GeneralValidator.validate_password data[:password]
+
+      if @config[:relaxed_password_validation]
+        errors.push INVALID_RELAXED_PASSWORD unless GeneralValidator.validate_password_relaxed data[:password]
+      else
+        errors.push INVALID_PASSWORD unless GeneralValidator.validate_password data[:password]
+      end
 
       errors.push INVALID_EMAIL unless GeneralValidator.validate_email data[:email] if data[:email].to_s != ''
       errors.push INVALID_MOBILE unless GeneralValidator.validate_mobile data[:mobile_number] if data[:mobile_number].to_s != ''
@@ -59,7 +69,15 @@ class IdentityValidator
       errors.push NO_DATA_FOUND if data[:public_key].to_s == '' && data[:password].to_s == ''
 
       # password is not required, but if present, must be valid
-      errors.push INVALID_PASSWORD unless GeneralValidator.validate_password data[:password] if data[:password].to_s != ''
+      if data[:password].to_s != ''
+
+        if @config[:relaxed_password_validation]
+          errors.push INVALID_RELAXED_PASSWORD unless GeneralValidator.validate_password_relaxed data[:password]
+        else
+          errors.push INVALID_PASSWORD unless GeneralValidator.validate_password data[:password]
+        end
+
+      end
 
       # public key is not required, but if present, must be valid
       errors.concat validate_public_key data
@@ -92,7 +110,13 @@ class IdentityValidator
 
     #fields
     errors.push INVALID_USERNAME unless GeneralValidator.validate_username_strict data[:username]
-    errors.push INVALID_PASSWORD unless GeneralValidator.validate_password data[:password]
+
+    if @config[:relaxed_password_validation]
+      errors.push INVALID_RELAXED_PASSWORD unless GeneralValidator.validate_password_relaxed data[:password]
+    else
+      errors.push INVALID_PASSWORD unless GeneralValidator.validate_password data[:password]
+    end
+
     errors.push INVALID_DOMAIN unless GeneralValidator.validate_string_strict data[:domain]
 
     if data[:redirect].to_s != ''
@@ -216,7 +240,13 @@ class IdentityValidator
       errors.push INVALID_USERNAME unless GeneralValidator.validate_username_strict data[:username]
       errors.push INVALID_NONCE unless GeneralValidator.validate_uuid data[:nonce]
       errors.push INVALID_OTP unless GeneralValidator.validate_integer data[:otp]
-      errors.push INVALID_PASSWORD unless GeneralValidator.validate_password data[:password]
+
+      if @config[:relaxed_password_validation]
+        errors.push INVALID_RELAXED_PASSWORD unless GeneralValidator.validate_password_relaxed data[:password]
+      else
+        errors.push INVALID_PASSWORD unless GeneralValidator.validate_password data[:password]
+      end
+
     end
 
     raise ValidationError, {:valid => false, :errors => errors}.to_json if errors.count > 0
