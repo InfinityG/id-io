@@ -75,7 +75,7 @@ end
 
 And(/^an error message of "([^"]*)"$/) do |arg|
   errors = @final_result[:errors]
-  assert errors[0] == arg
+  assert errors.include? arg
 end
 
 

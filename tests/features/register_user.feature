@@ -51,7 +51,7 @@ Feature: Register a new user
     And an invalid password
     When I send a registration request to the API
     Then the registration endpoint should respond with a 400 response code
-    And an error message of "Invalid password. Minimum 8 characters length, with at least 1 upper case, 1 numeric and 1 special character"
+    And an error message of "Invalid password. Minimum 6 characters length, with at least 1 upper case, 1 numeric and 1 special character."
 
   Scenario: Register user with missing password
     Given a first name
@@ -59,4 +59,4 @@ Feature: Register a new user
     And a username
     When I send a registration request to the API
     Then the registration endpoint should respond with a 400 response code
-    And an error message of "Invalid password. Minimum 8 characters length, with at least 1 upper case, 1 numeric and 1 special character"
+    And an error message of "Invalid password. Minimum 6 characters length, with at least 1 upper case, 1 numeric and 1 special character."
