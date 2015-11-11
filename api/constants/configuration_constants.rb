@@ -6,7 +6,7 @@ module ConfigurationConstants
         :host => '0.0.0.0',
         :port => 9002,
         :force_ascii_conversion => false,
-        :relaxed_password_validation => true,
+        :relaxed_password_validation => false,
         :api_auth_token => ENV['API_AUTH_TOKEN'],
         :api_secret_ecdsa_key => ENV['API_SECRET_KEY'],
         :api_public_ecdsa_key => ENV['API_PUBLIC_KEY'],
