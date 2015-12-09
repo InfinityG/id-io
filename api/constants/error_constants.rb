@@ -17,6 +17,7 @@ module ErrorConstants
     INVALID_USER_ID = 'Invalid user id'
     INVALID_MOBILE_FOR_USER = 'Invalid mobile for user'
     INVALID_EMAIL_FOR_USER = 'Invalid email for user'
+    INVALID_OTP = 'OTP invalid'
     CONNECTION_NOT_FOUND = 'Contact cannot be found'
     CONNECTION_ALREADY_EXISTS = 'A connection already exists between these users'
     INVALID_CONNECTION_STATUS = 'Invalid connection status'
@@ -42,7 +43,6 @@ module ErrorConstants
     INVALID_REDIRECT = 'Invalid redirect'
     INVALID_AES_KEY = 'Invalid AES key'
     INVALID_LOGIN_URI = 'Invalid login uri'
-    INVALID_OTP = 'OTP invalid'
     INVALID_NONCE = 'Nonce invalid'
     NO_CHALLENGE_FOUND = 'No challenge found!'
     INVALID_DIGEST = 'Invalid digest'
@@ -51,6 +51,7 @@ module ErrorConstants
     INVALID_CONNECTION_USER_ID = 'Invalid contact user id'
     INVALID_CONFIRMATION = 'Invalid confirmation'
     INVALID_OTP_REQUEST = 'Invalid OTP request'
+    INVALID_OTP = 'OTP invalid'
     INVALID_PASSWORD_RESET_REQUEST = 'Invalid password reset request'
     INVALID_META = 'Invalid meta'
   end
